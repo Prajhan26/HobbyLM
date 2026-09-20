@@ -1,0 +1,6 @@
+.figure { margin: 0; }
+.figure img { display: block; width: 100%; height: auto; }
+.meta { display: flex; margin-top: var(--space-3); align-items: center; justify-content: space-between; gap: var(--space-4); color: inherit; font-size: var(--text-caption); }
+.meta figcaption { color: #aaa99f; }
+.meta button { min-height: 2.75rem; padding: var(--space-2) var(--space-3); border: 1px solid currentColor; color: inherit; background: transparent; cursor: pointer; }
+@media (max-width: 40rem) { .meta { align-items: start; flex-direction: column; } }

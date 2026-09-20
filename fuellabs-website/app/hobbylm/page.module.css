@@ -1,0 +1,14 @@
+.hero { min-height: 70svh; display: grid; align-items: center; }
+.heroGrid { display: grid; align-items: end; grid-template-columns: 1.1fr .9fr; gap: clamp(3rem, 10vw, 10rem); }
+.heroGrid h1 { margin: var(--space-4) 0 var(--space-8); }
+.summary { display: grid; margin: 0; border-top: var(--hairline); }
+.summary div { display: grid; padding-block: var(--space-6); border-bottom: var(--hairline); grid-template-columns: 8rem 1fr; gap: var(--space-6); }
+.summary dt { color: var(--color-muted); font-family: var(--font-mono); font-size: var(--text-label); text-transform: uppercase; }
+.summary dd { margin: 0; line-height: 1.45; }
+.chapter { display: grid; align-items: center; grid-template-columns: .75fr 1.25fr; gap: clamp(3rem, 8vw, 7.5rem); }
+.chapter h2, .evidence h2 { margin: var(--space-4) 0 var(--space-8); }
+.chapter figure { margin: 0; }
+.chapter img { display: block; width: 100%; height: auto; }
+.chapter figcaption { margin-top: var(--space-3); color: #aaa99f; font-size: var(--text-caption); }
+.evidence { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3rem, 10vw, 10rem); }
+@media (max-width: 50rem) { .heroGrid, .chapter, .evidence { grid-template-columns: 1fr; } .chapter figure { order: -1; margin-inline: calc(-1 * var(--gutter)); } }

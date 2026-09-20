@@ -1,0 +1,8 @@
+.footer { padding-block: var(--space-16); color: var(--color-paper); background: var(--color-ink); }
+.footer :global(a) { color: inherit; }
+.inner { display: grid; width: min(100% - (2 * var(--gutter)), var(--container)); margin-inline: auto; grid-template-columns: 1fr auto; gap: var(--space-16); }
+.brand :global(a) { color: var(--color-paper); }
+.links { display: grid; grid-template-columns: repeat(3, auto); gap: var(--space-8); align-content: start; }
+.links a { font-size: 0.875rem; text-underline-offset: 0.25rem; }
+.note { display: flex; grid-column: 1 / -1; justify-content: space-between; padding-top: var(--space-6); border-top: 1px solid #3a3a35; color: #aaa99f; font-size: 0.75rem; }
+@media (max-width: 40rem) { .inner { grid-template-columns: 1fr; gap: var(--space-12); } .links { grid-template-columns: 1fr; gap: var(--space-3); } .note { display: grid; gap: var(--space-2); } }

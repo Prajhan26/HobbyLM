@@ -1,0 +1,5 @@
+mlx==0.32.3
+mlx-lm==0.31.3
+safetensors>=0.8.0
+huggingface-hub>=1.33.0
+tiktoken>=0.12.0

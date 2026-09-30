@@ -61,6 +61,29 @@ would need the `hobbylm` arch registered first.
 embeds `hobby-rs` along with the multimodal encoders, computer-use (Windows UI-Automation accessibility
 tree), and an MCP client for tool use. Point it at a GGUF and everything runs on your machine.
 
+## Running locally on Apple Silicon — MLX
+
+Mac users can run the text-only HobbyLM-Chat checkpoint through a native MLX implementation. The
+first command downloads the public checkpoint from Hugging Face; subsequent generation runs locally.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-mlx.txt
+python -m mlx_hobbylm.chat
+```
+
+For a one-shot prompt:
+
+```bash
+python -m mlx_hobbylm.chat --prompt "Explain sparse routing in one sentence."
+```
+
+The current MLX path is a correctness-first release for autoregressive text checkpoints. It uses
+native selected-expert matrix multiplies, but does not yet include a KV cache, quantization, RAG,
+multimodal inputs, or the diffusion decoder. See [`docs/MLX.md`](docs/MLX.md) for the validation gate
+and roadmap.
+
 ## Training it — `training/` + Modal
 
 The training stack is plain PyTorch, run on [Modal](https://modal.com) serverless GPUs (1–8× H100):

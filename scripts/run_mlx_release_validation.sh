@@ -63,6 +63,7 @@ create_venv "$MLX_VENV"
 echo "[1/3] Testing native and Hugging Face weight adapters with a tiny model"
 "$MLX_VENV/bin/pip" install torch
 "$MLX_VENV/bin/python" scripts/test_mlx_parity.py
+"$MLX_VENV/bin/python" scripts/test_mlx_kv_cache.py
 
 echo "[2/3] Creating the deterministic PyTorch reference (CPU, no cloud GPU)"
 "$HF_VENV/bin/python" scripts/create_hf_reference.py --model "$MODEL"

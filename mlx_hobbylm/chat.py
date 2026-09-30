@@ -30,15 +30,22 @@ def _next_token(logits: mx.array, previous: list[int], temperature: float, repet
 def generate(model, prompt_ids: list[int], *, max_tokens: int, temperature: float,
              repetition_penalty: float, context: int) -> tuple[list[int], float]:
     ids = list(prompt_ids)
+    cache = model.make_cache()
+    current = mx.array([ids[-context:]], dtype=mx.int32)
     started = time.perf_counter()
     for _ in range(max_tokens):
-        current = mx.array([ids[-context:]], dtype=mx.int32)
-        logits = model(current)[0, -1]
+        logits = model(current, cache=cache)[0, -1]
         mx.eval(logits)
         token = _next_token(logits, ids, temperature, repetition_penalty)
         ids.append(token)
         if token == EOT:
             break
+        cached_length = cache[0][0].shape[-2]
+        if cached_length >= context:
+            cache = model.make_cache()
+            current = mx.array([ids[-context:]], dtype=mx.int32)
+        else:
+            current = mx.array([[token]], dtype=mx.int32)
     return ids[len(prompt_ids) :], time.perf_counter() - started
 
 

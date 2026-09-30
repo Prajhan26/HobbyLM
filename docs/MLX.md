@@ -71,6 +71,7 @@ expert-routing checks.
 
 - Text-only autoregressive HobbyLM checkpoints
 - Native sparse selected-expert computation through MLX gather matrix multiplies
+- Per-layer KV caching for incremental decoding
 - GPT-2 tokenization and the confirmed `SYSTEM:` / `USER:` / `ASSISTANT:` format
 - Greedy or temperature sampling with a repetition penalty
 
@@ -81,11 +82,10 @@ expert-routing checks.
 - Multimodal and diffusion checkpoints
 - A desktop installer
 - Quantization
-- KV caching and production serving
+- Production serving
 
-The initial generator recomputes the current context for every token. It is a
-correctness milestone, not the final performance implementation. Add a KV cache
-only after parity with the PyTorch reference is established.
+The generator uses a per-layer KV cache and rebuilds it when a rolling context
+window is required. Production serving and continuous batching remain deferred.
 
 ## Release gate
 
@@ -93,5 +93,6 @@ only after parity with the PyTorch reference is established.
 2. Public HobbyLM-Chat downloads and loads without manual weight editing.
 3. Fixed greedy prompts produce matching PyTorch and MLX token sequences.
 4. Selected expert IDs agree on the test prompts.
-5. Memory and tokens-per-second are recorded on at least one target Mac.
-6. The README states the model's capability limits and supported hardware.
+5. Cached decoding matches uncached logits, tokens, and expert routes.
+6. Memory and tokens-per-second are recorded on at least one target Mac.
+7. The README states the model's capability limits and supported hardware.

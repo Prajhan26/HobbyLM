@@ -57,17 +57,20 @@ def main() -> None:
 
     prompt_ids = reference["prompt_ids"].tolist()
     ids = list(prompt_ids)
+    cache = model.make_cache()
+    current = mx.array([ids], dtype=mx.int32)
     first_logits = None
     first_routes = None
     generation_started = time.perf_counter()
     for step in range(len(reference["generated_ids"])):
-        logits = model(mx.array([ids], dtype=mx.int32))[0, -1].astype(mx.float32)
+        logits = model(current, cache=cache)[0, -1].astype(mx.float32)
         mx.eval(logits)
         if step == 0:
             first_logits = np.asarray(logits)
             first_routes = route_snapshot(model)
         token = int(mx.argmax(logits[:50257]).item())
         ids.append(token)
+        current = mx.array([[token]], dtype=mx.int32)
         if token == 50256:
             break
     generation_seconds = time.perf_counter() - generation_started
@@ -83,6 +86,7 @@ def main() -> None:
         "platform": platform.platform(),
         "python": platform.python_version(),
         "mlx": getattr(mx, "__version__", "unknown"),
+        "kv_cache": True,
         "load_seconds": load_seconds,
         "generation_seconds": generation_seconds,
         "generated_tokens": int(len(actual_ids)),

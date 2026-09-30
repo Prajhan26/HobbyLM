@@ -8,6 +8,7 @@ import mlx.core as mx
 import numpy as np
 import tiktoken
 
+from . import __version__
 from .weights import load
 
 
@@ -51,6 +52,7 @@ def generate(model, prompt_ids: list[int], *, max_tokens: int, temperature: floa
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run HobbyLM locally with Apple MLX")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument(
         "--model",
         default="harims95/hobbylm-1b-broad-sft-3450-hf",
@@ -82,7 +84,9 @@ def main() -> None:
             repetition_penalty=args.repetition_penalty,
             context=context,
         )
-        output = tokenizer.decode([token for token in output_ids if token < GPT2_VALID])
+        output = tokenizer.decode(
+            [token for token in output_ids if token < GPT2_VALID and token != EOT]
+        )
         rate = len(output_ids) / elapsed if elapsed else 0.0
         print(f"\nHobbyLM: {output.strip()}\n\n[{len(output_ids)} tokens · {rate:.1f} tok/s]\n")
 

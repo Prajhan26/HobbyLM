@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hobbylm-mlx"
+version = "0.1.0"
+description = "Native Apple MLX inference for HobbyLM sparse-MoE models"
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+  "mlx==0.32.3",
+  "mlx-lm==0.31.3",
+  "safetensors>=0.8.0",
+  "huggingface-hub>=1.33.0",
+  "tiktoken>=0.12.0",
+]
+
+[project.scripts]
+hobbylm-mlx = "mlx_hobbylm.chat:main"
+
+[tool.setuptools]
+packages = ["mlx_hobbylm"]

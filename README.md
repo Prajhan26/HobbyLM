@@ -67,22 +67,21 @@ Mac users can run the text-only HobbyLM-Chat checkpoint through a native MLX imp
 first command downloads the public checkpoint from Hugging Face; subsequent generation runs locally.
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements-mlx.txt
-python -m mlx_hobbylm.chat
+python3.12 -m venv .venv-mlx
+source .venv-mlx/bin/activate
+pip install .
+hobbylm-mlx
 ```
 
 For a one-shot prompt:
 
 ```bash
-python -m mlx_hobbylm.chat --prompt "Explain sparse routing in one sentence."
+hobbylm-mlx --prompt "Explain sparse routing in one sentence."
 ```
 
-The current MLX path is a correctness-first release for autoregressive text checkpoints. It uses
-native selected-expert matrix multiplies, but does not yet include a KV cache, quantization, RAG,
-multimodal inputs, or the diffusion decoder. See [`docs/MLX.md`](docs/MLX.md) for the validation gate
-and roadmap.
+The MLX path uses native selected-expert matrix multiplies and parity-tested KV-cached decoding.
+Quantization, RAG, multimodal inputs, and the diffusion decoder remain outside the v1 scope. See
+[`docs/MLX.md`](docs/MLX.md) for the validation gate and roadmap.
 
 ## Training it — `training/` + Modal
 
@@ -121,6 +120,11 @@ hobby-chat/     Tauri desktop app
 This is a research / hobby project at the 500M scale. It's genuinely fluent and the multimodal and
 agent pieces work, but it carries the capability ceiling of a small model — it isn't meant to compete
 with frontier systems. Weights aren't checked into the repo; grab them from Hugging Face.
+
+The 1B broad-SFT MLX release is also a research preview, not a safety-tuned assistant. Its frozen v1
+prompt suite confirms reliable local execution, but human review still finds incorrect reasoning,
+imperfect structured output, and unsafe answers to some adversarial safety prompts. Do not rely on it
+for medical, legal, financial, security-critical, or other high-stakes decisions.
 
 ## License
 

@@ -2,4 +2,6 @@
 
 from .model import HobbyLM, HobbyLMConfig
 
-__all__ = ["HobbyLM", "HobbyLMConfig"]
+__version__ = "0.1.0"
+
+__all__ = ["HobbyLM", "HobbyLMConfig", "__version__"]

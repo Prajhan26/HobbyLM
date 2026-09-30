@@ -25,8 +25,10 @@ same runtime, and a later RAG layer can retrieve passages from local files.
 ## One-command M1 Max validation
 
 Requirements: Apple Silicon, Python 3.10+, and at least 20 GiB free disk.
-The script runs PyTorch and MLX sequentially so both copies of the model are
-never resident together.
+The script uses separate PyTorch-reference and MLX environments because the
+released checkpoint pins Transformers 4.46.3 while current MLX tooling uses a
+newer Hugging Face client. It also runs them sequentially so both copies of the
+model are never resident together.
 
 ```bash
 git clone <HobbyLM repository URL>
@@ -49,13 +51,15 @@ public SFT checkpoint. The verified prompt serialization is literal
 Requirements: an Apple-Silicon Mac and Python 3.10 or newer.
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements-mlx.txt -r requirements-mlx-reference.txt
-python scripts/test_mlx_parity.py
-python scripts/create_hf_reference.py
-python scripts/validate_mlx_release.py
-python -m mlx_hobbylm.chat --prompt "Give me three ways to take better research notes."
+python3 -m venv .venv-hf-reference
+.venv-hf-reference/bin/pip install -r requirements-mlx-reference.txt
+.venv-hf-reference/bin/python scripts/create_hf_reference.py
+
+python3 -m venv .venv-mlx-release
+.venv-mlx-release/bin/pip install -r requirements-mlx.txt torch
+.venv-mlx-release/bin/python scripts/test_mlx_parity.py
+.venv-mlx-release/bin/python scripts/validate_mlx_release.py
+.venv-mlx-release/bin/python -m mlx_hobbylm.chat --prompt "Give me three ways to take better research notes."
 ```
 
 The parity test creates a tiny deterministic HobbyLM, loads identical weights

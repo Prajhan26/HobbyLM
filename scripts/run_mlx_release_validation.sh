@@ -19,11 +19,44 @@ MLX_VENV="${HOBBYLM_MLX_VENV:-.venv-mlx-release}"
 HF_VENV="${HOBBYLM_HF_VENV:-.venv-hf-reference}"
 MODEL="${HOBBYLM_MODEL:-harims95/hobbylm-1b-broad-sft-3450-hf}"
 
-python3 -m venv "$HF_VENV"
+PYTHON="${HOBBYLM_PYTHON:-}"
+if [[ -z "$PYTHON" ]]; then
+  for candidate in python3.13 python3.12 python3.11 python3.10 python3; do
+    if command -v "$candidate" >/dev/null 2>&1 \
+      && "$candidate" -c 'import sys; raise SystemExit(not ((3, 10) <= sys.version_info[:2] < (3, 14)))'; then
+      PYTHON="$candidate"
+      break
+    fi
+  done
+fi
+
+if [[ -z "$PYTHON" ]] \
+  || ! command -v "$PYTHON" >/dev/null 2>&1 \
+  || ! "$PYTHON" -c 'import sys; raise SystemExit(not ((3, 10) <= sys.version_info[:2] < (3, 14)))'; then
+  echo "Python 3.10-3.13 is required (set HOBBYLM_PYTHON to its executable)." >&2
+  exit 1
+fi
+
+create_venv() {
+  local venv="$1"
+  local selected_version existing_version
+  selected_version="$("$PYTHON" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+  if [[ -x "$venv/bin/python" ]]; then
+    existing_version="$("$venv/bin/python" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+    if [[ "$existing_version" != "$selected_version" ]]; then
+      echo "Recreating $venv with Python $selected_version (was $existing_version)."
+      "$PYTHON" -m venv --clear "$venv"
+      return
+    fi
+  fi
+  "$PYTHON" -m venv "$venv"
+}
+
+create_venv "$HF_VENV"
 "$HF_VENV/bin/python" -m pip install --upgrade pip
 "$HF_VENV/bin/pip" install -r requirements-mlx-reference.txt
 
-python3 -m venv "$MLX_VENV"
+create_venv "$MLX_VENV"
 "$MLX_VENV/bin/python" -m pip install --upgrade pip
 "$MLX_VENV/bin/pip" install -r requirements-mlx.txt
 

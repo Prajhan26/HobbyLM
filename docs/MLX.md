@@ -24,7 +24,7 @@ same runtime, and a later RAG layer can retrieve passages from local files.
 
 ## One-command M1 Max validation
 
-Requirements: Apple Silicon, Python 3.10+, and at least 20 GiB free disk.
+Requirements: Apple Silicon, Python 3.10-3.13, and at least 20 GiB free disk.
 The script uses separate PyTorch-reference and MLX environments because the
 released checkpoint pins Transformers 4.46.3 while current MLX tooling uses a
 newer Hugging Face client. It also runs them sequentially so both copies of the
@@ -48,7 +48,7 @@ public SFT checkpoint. The verified prompt serialization is literal
 
 ## Manual developer setup
 
-Requirements: an Apple-Silicon Mac and Python 3.10 or newer.
+Requirements: an Apple-Silicon Mac and Python 3.10-3.13.
 
 ```bash
 python3 -m venv .venv-hf-reference

@@ -44,10 +44,15 @@ def generate(model, prompt_ids: list[int], *, max_tokens: int, temperature: floa
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run HobbyLM locally with Apple MLX")
-    parser.add_argument("--model", default="rootxhacker/HobbyLM-Chat", help="HF repo or local model directory")
+    parser.add_argument(
+        "--model",
+        default="harims95/hobbylm-1b-broad-sft-3450-hf",
+        help="HF repo or local model directory",
+    )
     parser.add_argument("--prompt", help="Single prompt; omit for an interactive session")
+    parser.add_argument("--system", default="", help="Optional system instruction")
     parser.add_argument("--max-tokens", type=int, default=120)
-    parser.add_argument("--context", type=int, default=4096)
+    parser.add_argument("--context", type=int, default=None)
     parser.add_argument("--temperature", type=float, default=0.7)
     parser.add_argument("--repetition-penalty", type=float, default=1.3)
     args = parser.parse_args()
@@ -55,10 +60,12 @@ def main() -> None:
     print(f"Loading {args.model} on Apple Silicon…", flush=True)
     model, cfg = load(args.model)
     tokenizer = tiktoken.get_encoding("gpt2")
+    context = min(args.context or cfg.max_position_embeddings, cfg.max_position_embeddings)
     print(f"Ready — {cfg.n_layers} layers, {cfg.n_experts} experts, top-{cfg.top_k}. Processing stays on this Mac.\n")
 
     def answer(question: str) -> None:
-        prompt = f"USER: {question.strip()}\nASSISTANT:"
+        system = f"SYSTEM: {args.system.strip()}\n" if args.system.strip() else ""
+        prompt = f"{system}USER: {question.strip()}\nASSISTANT:"
         prompt_ids = tokenizer.encode_ordinary(prompt)
         output_ids, elapsed = generate(
             model,
@@ -66,7 +73,7 @@ def main() -> None:
             max_tokens=args.max_tokens,
             temperature=args.temperature,
             repetition_penalty=args.repetition_penalty,
-            context=args.context,
+            context=context,
         )
         output = tokenizer.decode([token for token in output_ids if token < GPT2_VALID])
         rate = len(output_ids) / elapsed if elapsed else 0.0

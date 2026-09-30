@@ -18,6 +18,7 @@ checkpoints/
 # --- Data & run artifacts ---
 runs/
 data/
+/artifacts/
 *.jsonl
 *.zip
 *.wav

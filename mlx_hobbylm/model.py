@@ -35,9 +35,29 @@ class HobbyLMConfig:
     scale_embeddings: bool = False
     logit_softcap: float = 0.0
     rms_eps: float = 1e-6
+    max_position_embeddings: int = 1024
+    routed_scaling_factor: float = 1.0
 
     @classmethod
     def from_dict(cls, raw: dict[str, Any]) -> "HobbyLMConfig":
+        # Public Hugging Face exports use Transformers names, while native
+        # HobbyLM checkpoints use the shorter training-config names above.
+        aliases = {
+            "hidden_size": "d_model",
+            "num_hidden_layers": "n_layers",
+            "first_k_dense_replace": "n_dense_layers",
+            "num_attention_heads": "n_q_heads",
+            "num_key_value_heads": "n_kv_heads",
+            "use_qk_norm": "qk_norm",
+            "intermediate_size": "dense_ffn",
+            "moe_intermediate_size": "expert_ffn",
+            "num_local_experts": "n_experts",
+            "num_experts_per_tok": "top_k",
+            "n_shared_experts": "n_shared",
+            "tie_word_embeddings": "tie_embeddings",
+            "rms_norm_eps": "rms_eps",
+        }
+        raw = {aliases.get(key, key): value for key, value in raw.items()}
         allowed = {f.name for f in fields(cls)}
         values = {key: value for key, value in raw.items() if key in allowed}
         return cls(**values)
@@ -142,6 +162,8 @@ class SparseMoE(nn.Module):
         self.gate = nn.Linear(cfg.d_model, cfg.n_experts, bias=False)
         self.experts = ExpertBank(cfg)
         self.expert_bias = mx.zeros((cfg.n_experts,), dtype=mx.float32)
+        self.last_topi = None
+        self.last_topv = None
         if cfg.n_shared:
             if cfg.n_shared != 1:
                 raise ValueError("The first MLX release supports one shared expert")
@@ -158,6 +180,9 @@ class SparseMoE(nn.Module):
         weights = mx.take_along_axis(scores, indices, axis=-1)
         if cfg.norm_topk_prob:
             weights = weights / (weights.sum(axis=-1, keepdims=True) + 1e-9)
+        weights = weights * cfg.routed_scaling_factor
+        self.last_topi = indices
+        self.last_topv = weights
         routed = self.experts(x, indices)
         out = (routed * weights.astype(routed.dtype)[..., None]).sum(axis=-2)
         if cfg.n_shared:

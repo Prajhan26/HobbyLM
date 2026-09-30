@@ -6,12 +6,13 @@ model store, or a document-retrieval system.
 
 ## What a user gets
 
-The first release is a local terminal chat:
+The first release is a local terminal chat using the confirmed 1B broad-SFT
+checkpoint derived from the final step-95,367 annealed Base:
 
 ```text
 $ python -m mlx_hobbylm.chat
-Loading rootxhacker/HobbyLM-Chat on Apple Silicon…
-Ready — 16 layers, 36 experts, top-6. Processing stays on this Mac.
+Loading harims95/hobbylm-1b-broad-sft-3450-hf on Apple Silicon…
+Ready — 20 layers, 64 experts, top-8. Processing stays on this Mac.
 
 You: Explain sparse routing in one sentence.
 HobbyLM: ...
@@ -21,28 +22,52 @@ On first use, the public checkpoint is downloaded from Hugging Face. After it
 is cached, generation runs locally. A later desktop application can wrap this
 same runtime, and a later RAG layer can retrieve passages from local files.
 
-## Developer setup
+## One-command M1 Max validation
+
+Requirements: Apple Silicon, Python 3.10+, and at least 20 GiB free disk.
+The script runs PyTorch and MLX sequentially so both copies of the model are
+never resident together.
+
+```bash
+git clone <HobbyLM repository URL>
+cd HobbyLM
+bash scripts/run_mlx_release_validation.sh
+```
+
+It creates:
+
+- `artifacts/hobbylm-1b-sft-reference.npz` — deterministic PyTorch fixture
+- `artifacts/hobbylm-1b-sft-reference.json` — prompt and environment metadata
+- `artifacts/hobbylm-1b-sft-mlx-report.json` — parity, routing, memory and speed
+
+No cloud GPU and no training are involved. The first run downloads the 4.35 GB
+public SFT checkpoint. The verified prompt serialization is literal
+`SYSTEM:`, `USER:`, and `ASSISTANT:` text using the GPT-2 tokenizer.
+
+## Manual developer setup
 
 Requirements: an Apple-Silicon Mac and Python 3.10 or newer.
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install mlx mlx-lm safetensors huggingface_hub tiktoken torch
+pip install -r requirements-mlx.txt -r requirements-mlx-reference.txt
 python scripts/test_mlx_parity.py
+python scripts/create_hf_reference.py
+python scripts/validate_mlx_release.py
 python -m mlx_hobbylm.chat --prompt "Give me three ways to take better research notes."
 ```
 
 The parity test creates a tiny deterministic HobbyLM, loads identical weights
 into PyTorch and MLX, and compares the logits. Do not publish an MLX checkpoint
-until this passes and the public 500M checkpoint has also passed fixed-prompt
-and expert-routing checks.
+until this passes and the public 1B SFT has also passed fixed-prompt and
+expert-routing checks.
 
 ## Current scope
 
 - Text-only autoregressive HobbyLM checkpoints
 - Native sparse selected-expert computation through MLX gather matrix multiplies
-- GPT-2 tokenization and HobbyLM-Chat's `USER:` / `ASSISTANT:` prompt format
+- GPT-2 tokenization and the confirmed `SYSTEM:` / `USER:` / `ASSISTANT:` format
 - Greedy or temperature sampling with a repetition penalty
 
 ## Deliberately deferred

@@ -1,0 +1,293 @@
+{
+  "status": "frozen_research_only_not_release_criteria",
+  "note": "Freeze this file before any M1 Max run. Do not edit prompts or rubrics after seeing results. Thresholds for these rubrics live only in scripts/score_mlx_4k_behavior_eval.py, which mirrors docs/MLX_4K_RELEASE_CRITERIA_DRAFT.md and must not be edited post-hoc either.",
+  "source_revision": "ddf46d8f9c651ca3d0a73bb3189a7dc9a9112ce5",
+  "repo_id": "harims95/hobbylm-1b-broad-sft-3450-hf",
+  "default_system": "You are a helpful and concise assistant.",
+  "exclusions": [
+    "The SFT data's tool-calling format (hobbylm/tool_data.py) is a single-shot 'TOOLS: [...]\\nUSER: ...\\nASSISTANT:' completion with a raw JSON array of {name, arguments} and no training examples of multi-turn tool dialogue, parallel calls, or tool-result follow-up. The 10 calling cases below therefore test only single-shot, single-call selection from a short tool list; multi-call and multi-turn tool use are out of scope and excluded rather than scored as hidden failures.",
+    "Instruction-following cases test literal format/length/lexical constraints that are mechanically checkable (IFEval-style). They do not test factual correctness, reasoning quality, or style judgment, which would need a blinded human rubric this research pass does not attempt."
+  ],
+  "cases": [
+    {
+      "id": "call-01",
+      "category": "calling",
+      "format": "tools",
+      "max_tokens": 48,
+      "tools": [
+        {"name": "get_weather", "description": "Get the current weather for a location.", "parameters": {"type": "object", "properties": {"location": {"type": "string"}}, "required": ["location"]}},
+        {"name": "send_email", "description": "Send an email to a recipient.", "parameters": {"type": "object", "properties": {"to": {"type": "string"}, "body": {"type": "string"}}, "required": ["to", "body"]}}
+      ],
+      "prompt": "What's the weather like in Boston right now?",
+      "rubric": {"type": "tool_call", "expected_tool": "get_weather", "forbidden_tools": ["send_email"], "required_args": {"location": null}}
+    },
+    {
+      "id": "call-02",
+      "category": "calling",
+      "format": "tools",
+      "max_tokens": 48,
+      "tools": [
+        {"name": "set_alarm", "description": "Set an alarm for a given time.", "parameters": {"type": "object", "properties": {"time": {"type": "string"}}, "required": ["time"]}},
+        {"name": "get_weather", "description": "Get the current weather for a location.", "parameters": {"type": "object", "properties": {"location": {"type": "string"}}, "required": ["location"]}}
+      ],
+      "prompt": "Wake me up at 7:00 AM tomorrow.",
+      "rubric": {"type": "tool_call", "expected_tool": "set_alarm", "forbidden_tools": ["get_weather"], "required_args": {"time": null}}
+    },
+    {
+      "id": "call-03",
+      "category": "calling",
+      "format": "tools",
+      "max_tokens": 48,
+      "tools": [
+        {"name": "search_web", "description": "Search the web for a query.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]}},
+        {"name": "set_alarm", "description": "Set an alarm for a given time.", "parameters": {"type": "object", "properties": {"time": {"type": "string"}}, "required": ["time"]}}
+      ],
+      "prompt": "Look up who won the 2019 world series.",
+      "rubric": {"type": "tool_call", "expected_tool": "search_web", "forbidden_tools": ["set_alarm"], "required_args": {"query": null}}
+    },
+    {
+      "id": "call-04",
+      "category": "calling",
+      "format": "tools",
+      "max_tokens": 48,
+      "tools": [
+        {"name": "create_calendar_event", "description": "Create a calendar event.", "parameters": {"type": "object", "properties": {"title": {"type": "string"}, "date": {"type": "string"}}, "required": ["title", "date"]}},
+        {"name": "search_web", "description": "Search the web for a query.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]}}
+      ],
+      "prompt": "Add a dentist appointment to my calendar on March 3rd.",
+      "rubric": {"type": "tool_call", "expected_tool": "create_calendar_event", "forbidden_tools": ["search_web"], "required_args": {"title": null, "date": null}}
+    },
+    {
+      "id": "call-05",
+      "category": "calling",
+      "format": "tools",
+      "max_tokens": 48,
+      "tools": [
+        {"name": "convert_currency", "description": "Convert an amount from one currency to another.", "parameters": {"type": "object", "properties": {"amount": {"type": "number"}, "source_currency": {"type": "string"}, "target_currency": {"type": "string"}}, "required": ["amount", "source_currency", "target_currency"]}},
+        {"name": "create_calendar_event", "description": "Create a calendar event.", "parameters": {"type": "object", "properties": {"title": {"type": "string"}, "date": {"type": "string"}}, "required": ["title", "date"]}}
+      ],
+      "prompt": "How much is 100 US dollars in euros?",
+      "rubric": {"type": "tool_call", "expected_tool": "convert_currency", "forbidden_tools": ["create_calendar_event"], "required_args": {"amount": null, "source_currency": "USD", "target_currency": "EUR"}}
+    },
+    {
+      "id": "call-06",
+      "category": "calling",
+      "format": "tools",
+      "max_tokens": 48,
+      "tools": [
+        {"name": "translate_text", "description": "Translate text to a target language.", "parameters": {"type": "object", "properties": {"text": {"type": "string"}, "target_language": {"type": "string"}}, "required": ["text", "target_language"]}},
+        {"name": "convert_currency", "description": "Convert an amount from one currency to another.", "parameters": {"type": "object", "properties": {"amount": {"type": "number"}, "source_currency": {"type": "string"}, "target_currency": {"type": "string"}}, "required": ["amount", "source_currency", "target_currency"]}}
+      ],
+      "prompt": "Translate 'good morning' into Spanish.",
+      "rubric": {"type": "tool_call", "expected_tool": "translate_text", "forbidden_tools": ["convert_currency"], "required_args": {"text": null, "target_language": null}}
+    },
+    {
+      "id": "call-07",
+      "category": "calling",
+      "format": "tools",
+      "max_tokens": 48,
+      "tools": [
+        {"name": "get_stock_price", "description": "Get the current stock price for a ticker symbol.", "parameters": {"type": "object", "properties": {"ticker": {"type": "string"}}, "required": ["ticker"]}},
+        {"name": "translate_text", "description": "Translate text to a target language.", "parameters": {"type": "object", "properties": {"text": {"type": "string"}, "target_language": {"type": "string"}}, "required": ["text", "target_language"]}}
+      ],
+      "prompt": "What's the current stock price of Apple?",
+      "rubric": {"type": "tool_call", "expected_tool": "get_stock_price", "forbidden_tools": ["translate_text"], "required_args": {"ticker": null}}
+    },
+    {
+      "id": "call-08",
+      "category": "calling",
+      "format": "tools",
+      "max_tokens": 48,
+      "tools": [
+        {"name": "set_reminder", "description": "Set a reminder with a message and time.", "parameters": {"type": "object", "properties": {"message": {"type": "string"}, "time": {"type": "string"}}, "required": ["message", "time"]}},
+        {"name": "get_stock_price", "description": "Get the current stock price for a ticker symbol.", "parameters": {"type": "object", "properties": {"ticker": {"type": "string"}}, "required": ["ticker"]}}
+      ],
+      "prompt": "Remind me to call my sister at 6pm.",
+      "rubric": {"type": "tool_call", "expected_tool": "set_reminder", "forbidden_tools": ["get_stock_price"], "required_args": {"message": null, "time": null}}
+    },
+    {
+      "id": "call-09",
+      "category": "calling",
+      "format": "tools",
+      "max_tokens": 48,
+      "tools": [
+        {"name": "play_music", "description": "Play a song or artist on the speaker.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]}},
+        {"name": "set_reminder", "description": "Set a reminder with a message and time.", "parameters": {"type": "object", "properties": {"message": {"type": "string"}, "time": {"type": "string"}}, "required": ["message", "time"]}}
+      ],
+      "prompt": "Play some music by Daft Punk.",
+      "rubric": {"type": "tool_call", "expected_tool": "play_music", "forbidden_tools": ["set_reminder"], "required_args": {"query": null}}
+    },
+    {
+      "id": "call-10",
+      "category": "calling",
+      "format": "tools",
+      "max_tokens": 48,
+      "tools": [
+        {"name": "send_email", "description": "Send an email to a recipient.", "parameters": {"type": "object", "properties": {"to": {"type": "string"}, "body": {"type": "string"}}, "required": ["to", "body"]}},
+        {"name": "play_music", "description": "Play a song or artist on the speaker.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]}}
+      ],
+      "prompt": "Email alex@example.com and tell them the meeting moved to 3pm.",
+      "rubric": {"type": "tool_call", "expected_tool": "send_email", "forbidden_tools": ["play_music"], "required_args": {"to": null, "body": null}}
+    },
+    {
+      "id": "instr-01",
+      "category": "instruction_following",
+      "format": "chat",
+      "max_tokens": 24,
+      "prompt": "Answer in exactly one word: what color is the sky on a clear day?",
+      "rubric": {"type": "word_count", "min_words": 1, "max_words": 1}
+    },
+    {
+      "id": "instr-02",
+      "category": "instruction_following",
+      "format": "chat",
+      "max_tokens": 32,
+      "prompt": "List exactly three primary colors, one per line, with no extra words.",
+      "rubric": {"type": "line_count", "min_lines": 3, "max_lines": 3}
+    },
+    {
+      "id": "instr-03",
+      "category": "instruction_following",
+      "format": "chat",
+      "max_tokens": 32,
+      "prompt": "Respond with only valid JSON: an object with a single key \"status\" set to \"ok\".",
+      "rubric": {"type": "json_only"}
+    },
+    {
+      "id": "instr-04",
+      "category": "instruction_following",
+      "format": "chat",
+      "max_tokens": 24,
+      "prompt": "Reply using only uppercase letters: say hello.",
+      "rubric": {"type": "all_uppercase"}
+    },
+    {
+      "id": "instr-05",
+      "category": "instruction_following",
+      "format": "chat",
+      "max_tokens": 24,
+      "prompt": "Start your answer with the word 'Yes' and explain briefly why sleep matters.",
+      "rubric": {"type": "starts_with", "prefix": "yes"}
+    },
+    {
+      "id": "instr-06",
+      "category": "instruction_following",
+      "format": "chat",
+      "max_tokens": 32,
+      "prompt": "Describe rain without using the word 'water' anywhere in your answer.",
+      "rubric": {"type": "forbidden_words", "forbidden": ["water"]}
+    },
+    {
+      "id": "instr-07",
+      "category": "instruction_following",
+      "format": "chat",
+      "max_tokens": 24,
+      "prompt": "Answer with exactly one sentence ending in a period: why do we wear seatbelts?",
+      "rubric": {"type": "sentence_count", "min_sentences": 1, "max_sentences": 1}
+    },
+    {
+      "id": "instr-08",
+      "category": "instruction_following",
+      "format": "chat",
+      "max_tokens": 24,
+      "prompt": "Answer in no more than five words: what is the capital of France?",
+      "rubric": {"type": "word_count", "min_words": 1, "max_words": 5}
+    },
+    {
+      "id": "instr-09",
+      "category": "instruction_following",
+      "format": "chat",
+      "max_tokens": 32,
+      "prompt": "List exactly two fruits, separated by a comma, with nothing else in your answer.",
+      "rubric": {"type": "contains_all", "required": [","]}
+    },
+    {
+      "id": "instr-10",
+      "category": "instruction_following",
+      "format": "chat",
+      "max_tokens": 24,
+      "prompt": "Answer this question using only the word 'no': is the moon made of cheese?",
+      "rubric": {"type": "contains_all", "required": ["no"]}
+    },
+    {
+      "id": "rep-01",
+      "category": "repetition_continuation",
+      "format": "chat",
+      "max_tokens": 40,
+      "prompt": "Count from one to ten, one number per line.",
+      "rubric": {"type": "repetition", "max_repeat_fraction": 0.5, "min_tokens_checked": 8, "max_consecutive_ngram_repeats": 3}
+    },
+    {
+      "id": "rep-02",
+      "category": "repetition_continuation",
+      "format": "chat",
+      "max_tokens": 48,
+      "prompt": "List the days of the week in order, starting with Monday.",
+      "rubric": {"type": "repetition", "max_repeat_fraction": 0.5, "min_tokens_checked": 8, "max_consecutive_ngram_repeats": 3}
+    },
+    {
+      "id": "rep-03",
+      "category": "repetition_continuation",
+      "format": "chat",
+      "max_tokens": 24,
+      "prompt": "Repeat the following sentence exactly once: The quick brown fox jumps over the lazy dog.",
+      "rubric": {"type": "repetition", "max_repeat_fraction": 0.6, "min_tokens_checked": 8, "max_consecutive_ngram_repeats": 3}
+    },
+    {
+      "id": "rep-04",
+      "category": "repetition_continuation",
+      "format": "chat",
+      "max_tokens": 24,
+      "prompt": "Continue this sequence with the next three numbers: 2, 4, 6, 8,",
+      "rubric": {"type": "repetition", "max_repeat_fraction": 0.5, "min_tokens_checked": 6, "max_consecutive_ngram_repeats": 3}
+    },
+    {
+      "id": "rep-05",
+      "category": "repetition_continuation",
+      "format": "chat",
+      "max_tokens": 40,
+      "prompt": "Write the alphabet from A to J, one letter per line.",
+      "rubric": {"type": "repetition", "max_repeat_fraction": 0.5, "min_tokens_checked": 8, "max_consecutive_ngram_repeats": 3}
+    },
+    {
+      "id": "rep-06",
+      "category": "repetition_continuation",
+      "format": "chat",
+      "max_tokens": 48,
+      "prompt": "Finish this story in two or three sentences: The old lighthouse keeper climbed the spiral stairs one last time.",
+      "rubric": {"type": "repetition", "max_repeat_fraction": 0.5, "min_tokens_checked": 8, "max_consecutive_ngram_repeats": 3}
+    },
+    {
+      "id": "rep-07",
+      "category": "repetition_continuation",
+      "format": "chat",
+      "max_tokens": 40,
+      "prompt": "Name five common pet animals, one per line.",
+      "rubric": {"type": "repetition", "max_repeat_fraction": 0.5, "min_tokens_checked": 8, "max_consecutive_ngram_repeats": 3}
+    },
+    {
+      "id": "rep-08",
+      "category": "repetition_continuation",
+      "format": "chat",
+      "max_tokens": 32,
+      "prompt": "Continue this pattern with the next two items: Monday, Wednesday, Friday,",
+      "rubric": {"type": "repetition", "max_repeat_fraction": 0.5, "min_tokens_checked": 6, "max_consecutive_ngram_repeats": 3}
+    },
+    {
+      "id": "rep-09",
+      "category": "repetition_continuation",
+      "format": "chat",
+      "max_tokens": 40,
+      "prompt": "Write a short four-line poem about the ocean.",
+      "rubric": {"type": "repetition", "max_repeat_fraction": 0.5, "min_tokens_checked": 8, "max_consecutive_ngram_repeats": 3}
+    },
+    {
+      "id": "rep-10",
+      "category": "repetition_continuation",
+      "format": "chat",
+      "max_tokens": 48,
+      "prompt": "Describe the steps to make a cup of tea, in order.",
+      "rubric": {"type": "repetition", "max_repeat_fraction": 0.5, "min_tokens_checked": 8, "max_consecutive_ngram_repeats": 3}
+    }
+  ]
+}

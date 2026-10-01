@@ -1,16 +1,19 @@
 # HobbyLM-1B 4K MLX checkpoint audit
 
-Status: 4K training length confirmed in the raw SFT checkpoint; a 4096-token
-parity probe fails expert-set agreement, and retrieval is inconsistent. This
-does not certify a 4K MLX release.
+Status: Hari confirms 4K SFT training and says the original 1024 HF config was
+copied from the pretrained Base export. The HF repo's newer revision now
+publishes 4096 metadata with unchanged weights. This is **not** a validated
+4K MLX release: strict parity and early-position retrieval have failures, and
+Mac-specific behavioral acceptance has not yet been approved or run on M1 Max.
 
 ## What is established
 
-- The current public broad-SFT model is
-  `harims95/hobbylm-1b-broad-sft-3450-hf`, revision
-  `f4b8557098c01fd42195f32feee3a3275dfbfbe3`. Its published
-  `config.json` declares `max_position_embeddings: 1024` and
-  `rope_theta: 10000.0`. The MLX v1 validator correctly expects 1024.
+- The previously validated public broad-SFT revision is
+  `harims95/hobbylm-1b-broad-sft-3450-hf` at
+  `f4b8557098c01fd42195f32feee3a3275dfbfbe3`. Its pinned `config.json`
+  declares `max_position_embeddings: 1024` and `rope_theta: 10000.0`.
+  The MLX v1 validator expects 1024. The mutable repo's newer 4096 config is
+  described below; these revisions must not be conflated.
 - The public HF model commit says it converted
   `broad_instruct_sft_v1_ckpt_3450.pt` to FP32 HF format.
 - The raw training checkpoint is listed in
@@ -30,16 +33,68 @@ does not certify a 4K MLX release.
   `/data/runs/hobbylm_2k_to_4k_ext_v2_short_pythonic_retry_r2/ckpt_150.pt`,
   SHA-256 `4a0c8215317545f8ba54d0c01cc30987ed19d9b271414e03d2d25a1bd7d11639`.
   The handoff's frozen broad-SFT recipe says `CONTEXT_LENGTH: 4096`.
-- A public Hugging Face model listing under `harims95` shows no separately
-  published 4K broad-SFT model. The R2 parent is a Base training checkpoint,
-  not a replacement for the step-3450 SFT release.
+- There was no separately named 4K broad-SFT model in the earlier public
+  listing. The same SFT repo now has a newer 4096-configured revision; the
+  R2 parent is a Base checkpoint, not a substitute for step-3450 SFT weights.
 
 The raw step-3450 SFT checkpoint was saved with a 4096-token training length.
-The remaining provenance question is whether the public HF weights were
-converted exactly from that checkpoint and whether the 1024 limit was an
-intentional export decision. A model accepting 4096 input is also distinct
+Hari's later provenance update says the 1024 value was inherited from the
+pretrained Base config, rather than being an intentional SFT context cap.
+Whether the public HF weights are fully identical to a conversion of that
+checkpoint is not yet proven. A model accepting 4096 input is also distinct
 from useful retrieval at that depth; Hari's roadmap says deep 4K retrieval
 was not certified.
+
+## Hari's later provenance and release guidance
+
+Hari identifies `broad_instruct_sft_v1_ckpt_3450.pt` (SHA-256
+`ef62430d01a551c90f0a7fd9ca3ffad29ec50fea8aaee365de6d334d7a16cc34`)
+as the intended source. He reports the published HF Safetensors at revision
+`f4b8557098c01fd42195f32feee3a3275dfbfbe3` has SHA-256
+`d0899e0ac88c90a2c01ca481463bc0f96c6d50337f1b3e0dc56e1d3dc2999e89`.
+His comparison of 496 sections covering portions of 232 of 280 published
+tensors found all sampled sections matched. This strongly supports the
+lineage, but **does not prove full per-tensor identity**. These hashes and
+sample counts are from Hari's update. This audit independently recomputed the
+**published HF Safetensors SHA-256** from the local pinned snapshot and got
+`d0899e0ac88c90a2c01ca481463bc0f96c6d50337f1b3e0dc56e1d3dc2999e89`.
+It has not independently recomputed the full raw-checkpoint hash or the
+sampled conversion comparison.
+
+The exact command that produced the *public* upload has not been recovered.
+Hari documented a different, earlier `convert_checkpoint.py` export, with a
+converter hash beginning `af0bdc28` and export hash beginning `3298f8e7`;
+its recreation command must not be attributed to the later public revision.
+The raw SFT training config records `train.seq_len=4096`, plain RoPE at
+theta 10000, and no YaRN. Hari said a metadata correction was prepared. A
+live HF API check on 2026-10-01 confirmed it is **now published** at revision
+`ddf46d8f9c651ca3d0a73bb3189a7dc9a9112ce5`: its config declares
+`max_position_embeddings: 4096`, `rope_theta: 10000.0`, and
+`rope_scaling: null`. A direct config diff against the pinned 1024 revision
+shows only the context value and explicit null RoPE-scaling field changed;
+the current repo's Safetensors LFS SHA-256 is still
+`d0899e0ac88c90a2c01ca481463bc0f96c6d50337f1b3e0dc56e1d3dc2999e89`.
+This verifies a **metadata correction with unchanged published weights**,
+not 4K MLX behavioral acceptance.
+
+The shipping 1K validator and CLI resolve the model name without an immutable
+revision. A fresh default download may now see the 4096 config; the
+validator's explicit 1024 expectation will reject it. This is a release
+reproducibility issue to handle deliberately. The original M1 Max validation
+artifacts correspond to the prior 1024 revision, not mutable repo head.
+
+Hari proposes that exact PyTorch/MLX bit parity is not an automatic Mac
+release requirement. Faithful FP32 routing semantics and acceptable measured
+Mac behavior are required. Exact ties and numerical near-ties must be
+distinguished; token and expert-set mismatches must remain visible, with
+routing compared on identical input token sequences. Once generated tokens
+diverge, subsequent route comparisons are not same-input comparisons.
+Merely reporting mismatches is insufficient: calling accuracy, instruction
+following, repetition, and long-context behavior need acceptance tests.
+**Hari has not yet approved a Mac-specific tolerance or pass threshold.**
+The proposed thresholds and decision process are in
+`docs/MLX_4K_RELEASE_CRITERIA_DRAFT.md` and require approval before the M1 Max
+release run.
 
 ## Research-only long-context probes
 
@@ -64,10 +119,9 @@ shipping model or config:
   an evaluation score.
 
 Local ignored reports and fixtures live under `artifacts/hobbylm-4k-candidate-*`.
-These probes ran on an M4 Mac, not the target M1 Max. A separate scratchpad
-inspection reported a near-tie in layer 17's FP32 router scores; that analysis
-is not yet a committed reproducible diagnostic. The HF export's 1024 metadata
-remains unexplained.
+These probes ran on an M4 Mac, not the target M1 Max. The later committed
+`archive-512` diagnostic below explains a different short-context divergence;
+the 4096-token layer-17 flip has not received the same full diagnosis.
 
 ## Separate local candidate (not published)
 
@@ -206,23 +260,24 @@ tie-break alignment would be a behaviour decision to make deliberately, and the
 
 ## Evidence needed before a 4K release
 
-1. Confirm the exact HF export command or converter configuration and explain
-   why it wrote `max_position_embeddings: 1024` despite the raw checkpoint's
-   `seq_len: 4096`. Record the parent identity and conversion provenance.
-2. Confirm that the public HF weights really came from that exact checkpoint.
-   Preserve a revision and per-tensor conversion check; do not overwrite the
-   current 1024-configured release.
-3. Characterize the observed expert-set disagreements without changing the
-   FP32 router or architecture semantics. If the original
-   checkpoint and export provenance support 4096, publish a separate 4K
-   candidate with accurate config. Run PyTorch and MLX parity at
-   short, 2K, and near-4K lengths: logits, greedy token IDs, and expert sets.
-   Keep router computation FP32 and weight loading strict.
-4. Test shallow and deep retrieval separately, alongside memory and tokens per
-   second on the target Mac. Report failures as limitations, even if sequence
-   acceptance and numerical parity pass.
+1. Freeze and approve Mac-specific release criteria before using M1 Max
+   results to make a release decision. This is still pending.
+2. Verify the public HF export provenance further if a definitive lineage
+   claim is desired. Sampled tensor agreement and Hari's account are strong
+   evidence, but the public converter command and full identity remain open.
+3. Preserve strict final-token and expert-set comparisons as diagnostics;
+   measure tie and near-tie effects on identical inputs. Do not change FP32
+   router or architecture behavior just to make parity pass.
+4. Run frozen Mac behavioral and retrieval evaluations on the target M1 Max,
+   plus load, memory, speed, and missing/unexpected-weight checks. Keep raw
+   outputs and report failures even if the release criteria allow some
+   backend-dependent tied-expert selections.
+5. Decide whether to validate and distribute the new immutable 4096 HF
+   revision as 4K MLX. Do not silently re-label the old M1 Max artifacts or
+   call the new metadata a behavioral validation. Preserve a reproducible
+   path to the original pinned 1K revision.
 
-Do not relabel the current HF config or raise the CLI cap to make a test pass.
+Do not treat the newer 4096 HF metadata or a raised CLI cap as a test pass.
 No training, fine-tuning, quantization, or Modal work is authorized by this
 audit.
 

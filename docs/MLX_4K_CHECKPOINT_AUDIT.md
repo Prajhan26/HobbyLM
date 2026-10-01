@@ -147,6 +147,63 @@ The retrieval grid uses MLX only; it is not a PyTorch/MLX generation-parity
 test. All runs were on a local M4, not the target M1 Max. No training,
 quantization, router-behavior, or 1K release changes were made.
 
+## archive-512 divergence diagnosis (research only)
+
+Reproduce with the pinned public revision (the 1024-configured model; weights
+are identical to the 4K-config candidate):
+
+```bash
+.venv-hf-reference/bin/python scripts/diagnose_mlx_layer_divergence.py pytorch --dtype float32
+.venv-mlx-release/bin/python  scripts/diagnose_mlx_layer_divergence.py mlx
+.venv-hf-reference/bin/python scripts/diagnose_mlx_layer_divergence.py pytorch --dtype float64  # oracle only
+.venv-hf-reference/bin/python scripts/diagnose_mlx_layer_divergence.py analyze
+```
+
+Raw tensors stay in ignored `artifacts/archive512-divergence/`; the tracked
+result is `eval/mlx_archive512_divergence/summary.json`. The float64 run is a
+diagnostic oracle (same weights upcast exactly, router also in float64); it is
+not a product path and the FP32 router in both backends is untouched. M4 Mac,
+torch 2.14 / transformers 4.46.3, MLX 0.32.3, prompt SHA-256 `d3c1d267...30bb`.
+
+Findings:
+
+- **Replication is exact.** The op-by-op MLX replay equals the library forward
+  (max logit difference 0.0) and reproduces token 921. PyTorch gives 383.
+- **Layer 0 is clean.** Every op matches to about 5e-7 relative, the same noise
+  as PyTorch FP32 versus FP64. The first op above 1e-5 is transformer layer 1's
+  MoE output (9.5e-3), not attention, norms, RoPE, or the router logits (5e-7).
+- **Cause at layer 1: exact FP32 ties.** Router selection is sigmoid score plus
+  `expert_bias` (about 97 to 99 here). FP32 spacing at that scale is 7.6e-6, so
+  distinct scores collapse into equal selection values. Feeding MLX PyTorch's
+  exact router input still changes 322 token/layer expert sets across all MoE
+  layers, and all 322 are exact ties at the rank-8/rank-9 boundary. MLX
+  `argpartition` kept the lower expert index in 322/322; PyTorch `topk` kept
+  the higher index in 263/322 and a mixed choice in the rest. These are
+  different tie-break behaviours, not a weight or math error.
+- **Scale.** Over 9,728 token/layer pairs, 479 are exact ties in PyTorch, and
+  the boundary margin is below 1e-4 for 28% and below 1e-3 for 74%. A free run
+  has 651 differing sets; the audit's last-position check saw one layer.
+- **Weights and ops exonerated.** With PyTorch's expert indices forced in all
+  MoE layers, MLX final logits match PyTorch to 3.1e-5 max and choose 383.
+  Forcing only transformer layer 18 does not recover it (still 921).
+- **Transformer layer 18 (MoE index 17), last position.** Given PyTorch's
+  input, MLX picks PyTorch's set. In the free run upstream drift moves router
+  logits by up to 0.37 and the 8th/9th margin is 1.5e-4 (20 FP32 steps),
+  so that flip is drift from earlier tie flips, not an exact tie.
+- **The token is a near-tie.** Logit gap 383 minus 921: PyTorch FP32 +0.0014,
+  MLX FP32 -0.145, FP64 oracle +0.087. FP32 PyTorch and MLX are equally far
+  from the oracle after layer 1 (7.07e-3 vs 7.08e-3).
+
+Conclusion: the failure follows from tie-ridden FP32 top-8 selection amplified
+by the large router bias, plus a different tie-break rule in each backend. It
+is not evidence of a weight-mapping or operator bug.
+
+Remaining uncertainty: which tie-break matches the original CUDA training run
+is unknown, and the FP64 oracle is not ground truth for the trained model.
+One prompt, final position token only, M4 not M1 Max. No fix is made; any
+tie-break alignment would be a behaviour decision to make deliberately, and the
+1K release and parity criteria are unchanged.
+
 ## Evidence needed before a 4K release
 
 1. Confirm the exact HF export command or converter configuration and explain

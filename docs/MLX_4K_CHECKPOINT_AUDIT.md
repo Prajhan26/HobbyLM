@@ -64,8 +64,26 @@ shipping model or config:
   an evaluation score.
 
 Local ignored reports and fixtures live under `artifacts/hobbylm-4k-candidate-*`.
-These probes ran on an M4 Mac, not the target M1 Max. The exact router
-disagreement cause and the HF export's 1024 metadata remain unresolved.
+These probes ran on an M4 Mac, not the target M1 Max. A separate scratchpad
+inspection reported a near-tie in layer 17's FP32 router scores; that analysis
+is not yet a committed reproducible diagnostic. The HF export's 1024 metadata
+remains unexplained.
+
+## Separate local candidate (not published)
+
+Run `python scripts/prepare_mlx_4k_candidate.py` in an environment with
+`huggingface_hub` installed. It pins the public SFT revision above, creates
+`artifacts/hobbylm-1b-sft-3450-4k-candidate/`, copies its HF model code,
+changes only a copied `config.json` from 1024 to 4096, and symlinks the same
+FP32 Safetensors weight file. A manifest records the source revision and
+unresolved raw-checkpoint identity. The source HF repo and 1K CLI default are
+untouched. This directory is local and ignored by Git; its weight symlink
+depends on the local Hugging Face cache.
+
+The candidate loaded with strict MLX weight matching on the M4 Mac. Against
+the saved PyTorch fixture, its 3900-token next-token and all expert sets pass;
+its 4096-token run reproduces the same one-layer expert-set failure described
+above. A context metadata change alone therefore does not certify 4K.
 
 ## Evidence needed before a 4K release
 

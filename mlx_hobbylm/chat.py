@@ -16,6 +16,25 @@ EOT = 50256
 GPT2_VALID = 50257
 
 
+def serialize_prompt(
+    question: str,
+    *,
+    system: str,
+    history: list[tuple[str, str]],
+    tokenizer,
+    context: int,
+) -> list[int]:
+    prefix = f"SYSTEM: {system.strip()}\n" if system.strip() else ""
+    current = f"USER: {question.strip()}\nASSISTANT:"
+    turns = [f"USER: {user}\nASSISTANT: {assistant}\n" for user, assistant in history]
+    while turns:
+        ids = tokenizer.encode_ordinary(prefix + "".join(turns) + current)
+        if len(ids) <= context:
+            return ids
+        turns.pop(0)
+    return tokenizer.encode_ordinary(prefix + current)[-context:]
+
+
 def _next_token(logits: mx.array, previous: list[int], temperature: float, repetition_penalty: float) -> int:
     values = np.asarray(logits.astype(mx.float32))
     values[GPT2_VALID:] = -np.inf
@@ -72,10 +91,16 @@ def main() -> None:
     context = min(args.context or cfg.max_position_embeddings, cfg.max_position_embeddings)
     print(f"Ready — {cfg.n_layers} layers, {cfg.n_experts} experts, top-{cfg.top_k}. Processing stays on this Mac.\n")
 
+    history: list[tuple[str, str]] = []
+
     def answer(question: str) -> None:
-        system = f"SYSTEM: {args.system.strip()}\n" if args.system.strip() else ""
-        prompt = f"{system}USER: {question.strip()}\nASSISTANT:"
-        prompt_ids = tokenizer.encode_ordinary(prompt)
+        prompt_ids = serialize_prompt(
+            question,
+            system=args.system,
+            history=history,
+            tokenizer=tokenizer,
+            context=context,
+        )
         output_ids, elapsed = generate(
             model,
             prompt_ids,
@@ -86,14 +111,16 @@ def main() -> None:
         )
         output = tokenizer.decode(
             [token for token in output_ids if token < GPT2_VALID and token != EOT]
-        )
+        ).strip()
+        if not args.prompt and output:
+            history.append((question.strip(), output))
         rate = len(output_ids) / elapsed if elapsed else 0.0
-        print(f"\nHobbyLM: {output.strip()}\n\n[{len(output_ids)} tokens · {rate:.1f} tok/s]\n")
+        print(f"\nHobbyLM: {output}\n\n[{len(output_ids)} tokens · {rate:.1f} tok/s]\n")
 
     if args.prompt:
         answer(args.prompt)
         return
-    print("Type /quit to exit.\n")
+    print("Type /new to clear the conversation or /quit to exit.\n")
     while True:
         try:
             question = input("You: ")
@@ -102,6 +129,10 @@ def main() -> None:
             return
         if question.strip().lower() in {"/quit", "/exit"}:
             return
+        if question.strip().lower() == "/new":
+            history.clear()
+            print("Started a new conversation.\n")
+            continue
         if question.strip():
             answer(question)
 

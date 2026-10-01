@@ -80,6 +80,7 @@ hobbylm-mlx --prompt "Explain sparse routing in one sentence."
 ```
 
 The MLX path uses native selected-expert matrix multiplies and parity-tested KV-cached decoding.
+Interactive sessions include recent turns within the 1,024-token context; `/new` clears the session.
 Quantization, RAG, multimodal inputs, and the diffusion decoder remain outside the v1 scope. See
 [`docs/MLX.md`](docs/MLX.md) for the validation gate and roadmap.
 

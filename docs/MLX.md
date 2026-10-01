@@ -73,6 +73,7 @@ expert-routing checks.
 - Native sparse selected-expert computation through MLX gather matrix multiplies
 - Per-layer KV caching for incremental decoding
 - GPT-2 tokenization and the confirmed `SYSTEM:` / `USER:` / `ASSISTANT:` format
+- Terminal sessions include recent turns within the 1,024-token context; `/new` clears them
 - Greedy or temperature sampling with a repetition penalty
 
 ## Deliberately deferred

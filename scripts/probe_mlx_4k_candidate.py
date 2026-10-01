@@ -24,24 +24,29 @@ FIXTURE = Path("artifacts/hobbylm-4k-candidate-reference.npz")
 REPORT = Path("artifacts/hobbylm-4k-candidate-mlx-report.json")
 
 
-def prompt_ids(length: int) -> np.ndarray:
+def prompt_ids(length: int, variant: str = "archive") -> np.ndarray:
     tokenizer = tiktoken.get_encoding("gpt2")
     prefix = tokenizer.encode_ordinary(
         "SYSTEM: You are a helpful and concise assistant.\nUSER: "
     )
     suffix = tokenizer.encode_ordinary("\nASSISTANT:")
-    filler = tokenizer.encode_ordinary(
-        "The archive contains short notes about trees, weather, and maps. " * length
-    )
+    fillers = {
+        "archive": "The archive contains short notes about trees, weather, and maps. ",
+        "science": "A field notebook records observations about stars, rivers, and minerals. ",
+        "code": "The program reads a value, checks its type, and returns a result. ",
+    }
+    filler = tokenizer.encode_ordinary(fillers[variant] * length)
     available = length - len(prefix) - len(suffix)
+    if available < 0:
+        raise ValueError("Prompt length is too short")
     return np.asarray(prefix + filler[:available] + suffix, dtype=np.int32)
 
 
-def create_reference(model_id: str, length: int, output: Path) -> None:
+def create_reference(model_id: str, length: int, output: Path, variant: str = "archive") -> None:
     import torch
     from transformers import AutoModelForCausalLM
 
-    inputs = prompt_ids(length)
+    inputs = prompt_ids(length, variant)
     started = time.perf_counter()
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
@@ -64,7 +69,7 @@ def create_reference(model_id: str, length: int, output: Path) -> None:
             ]
         )
     output.parent.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(output, prompt_ids=inputs, logits=logits, routes=routes)
+    np.savez_compressed(output, prompt_ids=inputs, logits=logits, routes=routes, variant=variant)
     print(
         json.dumps(
             {
@@ -72,6 +77,7 @@ def create_reference(model_id: str, length: int, output: Path) -> None:
                 "backend": "pytorch",
                 "model": model_id,
                 "tokens": len(inputs),
+                "variant": variant,
                 "next_token": int(np.argmax(logits[:50257])),
                 "load_seconds": load_seconds,
                 "prefill_seconds": time.perf_counter() - started,
@@ -90,6 +96,7 @@ def compare_mlx(model_id: str, fixture: Path, output: Path) -> None:
         inputs = reference["prompt_ids"]
         expected_logits = reference["logits"]
         expected_routes = reference["routes"]
+        variant = str(reference["variant"]) if "variant" in reference else "archive"
     started = time.perf_counter()
     model, cfg = load(model_id)
     load_seconds = time.perf_counter() - started
@@ -122,6 +129,7 @@ def compare_mlx(model_id: str, fixture: Path, output: Path) -> None:
         "platform": platform.platform(),
         "published_max_position_embeddings": cfg.max_position_embeddings,
         "probe_tokens": int(len(inputs)),
+        "variant": variant,
         "expected_token": expected_token,
         "actual_token": actual_token,
         "token_match": expected_token == actual_token,
@@ -148,13 +156,14 @@ def main() -> None:
     parser.add_argument("backend", choices=["pytorch", "mlx"])
     parser.add_argument("--model", default=MODEL)
     parser.add_argument("--tokens", type=int, default=3900)
+    parser.add_argument("--variant", choices=["archive", "science", "code"], default="archive")
     parser.add_argument("--fixture", type=Path, default=FIXTURE)
     parser.add_argument("--report", type=Path, default=REPORT)
     args = parser.parse_args()
-    if not 1024 < args.tokens <= 4096:
-        parser.error("--tokens must be between 1025 and 4096")
+    if not 32 <= args.tokens <= 4096:
+        parser.error("--tokens must be between 32 and 4096")
     if args.backend == "pytorch":
-        create_reference(args.model, args.tokens, args.fixture)
+        create_reference(args.model, args.tokens, args.fixture, args.variant)
     else:
         compare_mlx(args.model, args.fixture, args.report)
 

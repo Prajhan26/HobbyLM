@@ -85,6 +85,24 @@ the saved PyTorch fixture, its 3900-token next-token and all expert sets pass;
 its 4096-token run reproduces the same one-layer expert-set failure described
 above. A context metadata change alone therefore does not certify 4K.
 
+An expanded, still-small deterministic sample uses three filler variants in
+`scripts/probe_mlx_4k_candidate.py`. Each case compares the final prompt
+position only, not every token in the prompt:
+
+| Tokens | Variant | Next token | Expert sets | Result |
+| ---: | --- | --- | --- | --- |
+| 512 | code | 383 on both | 19/19 | pass |
+| 2048 | science | 317 on both | 18/19 | fail: MoE index 1 |
+| 3900 | archive | 383 on both | 19/19 | pass |
+| 4096 | archive | 383 on both | 18/19 | fail: MoE index 16 |
+| 4096 | code | 383 on both | 18/19 | fail: MoE index 5 |
+
+The mismatches at 2048 and 4096 occur in different MoE layers. This sample
+is too small to estimate a failure rate and does not establish generation
+sequence parity, retrieval quality, or M1 Max performance. Matching next
+tokens do not override the failed strict expert-set checks. Local fixtures
+and reports for these cases are ignored under `artifacts/`.
+
 ## Evidence needed before a 4K release
 
 1. Confirm the exact HF export command or converter configuration and explain
@@ -93,8 +111,8 @@ above. A context metadata change alone therefore does not certify 4K.
 2. Confirm that the public HF weights really came from that exact checkpoint.
    Preserve a revision and per-tensor conversion check; do not overwrite the
    current 1024-configured release.
-3. Explain and fix the layer-17 4096-token expert-set disagreement without
-   changing the FP32 router or architecture semantics. If the original
+3. Characterize the observed expert-set disagreements without changing the
+   FP32 router or architecture semantics. If the original
    checkpoint and export provenance support 4096, publish a separate 4K
    candidate with accurate config. Run PyTorch and MLX parity at
    short, 2K, and near-4K lengths: logits, greedy token IDs, and expert sets.

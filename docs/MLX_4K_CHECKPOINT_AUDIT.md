@@ -103,6 +103,50 @@ sequence parity, retrieval quality, or M1 Max performance. Matching next
 tokens do not override the failed strict expert-set checks. Local fixtures
 and reports for these cases are ignored under `artifacts/`.
 
+## Frozen research grids (M4 Mac, 16 GiB)
+
+`eval/mlx_4k_research_suite.json` freezes three prompt variants at four
+lengths (12 final-position parity cases) and two access codes at three lengths
+and three needle positions (18 retrieval cases). With the local candidate
+prepared, the commands are:
+
+```bash
+.venv-hf-reference/bin/python scripts/evaluate_mlx_4k_parity.py pytorch
+bash scripts/run_mlx_4k_parity_isolated.sh
+bash scripts/run_mlx_4k_retrieval_isolated.sh
+```
+
+The PyTorch run completed all 12 references. The MLX parity runner uses a
+fresh process per case because a single-process batch caused severe swapping
+on this 16 GiB machine. It intentionally exits nonzero when any strict case
+fails. Ignored per-case fixtures and reports are in
+`artifacts/mlx-4k-research-parity/`; retrieval reports are in
+`artifacts/mlx-4k-research-retrieval-*.json`.
+
+| Prompt tokens | Strict parity passes | Exact retrieval |
+| ---: | ---: | ---: |
+| 512 parity / 1024 retrieval | 1/3 | 6/6 |
+| 2048 | 0/3 | 6/6 |
+| 3900 | 2/3 | 4/6 |
+| 4096 parity only | 1/3 | not run |
+| Total | **4/12** | **16/18** |
+
+The final prompt-position next token matched in 11/12 parity cases. The
+`archive-512` case differs in both next token (PyTorch 383, MLX 921) and one
+expert set; the same mismatch reproduces with the original published
+1024-configured model. Thus the earlier M1 Max 1K release result remains a
+pass for its *specific frozen prompt*, but it does not establish broad 1K
+parity. Other cases can match the next token while choosing different expert
+sets. These are observations, not a proof of a router implementation bug or
+an acceptable tie tolerance.
+
+At 3900 tokens, both codes are retrieved from middle and late positions, but
+both fail at the early 10% position. This simple repetitive synthetic task
+does not measure real-world chat quality or certify long-context usefulness.
+The retrieval grid uses MLX only; it is not a PyTorch/MLX generation-parity
+test. All runs were on a local M4, not the target M1 Max. No training,
+quantization, router-behavior, or 1K release changes were made.
+
 ## Evidence needed before a 4K release
 
 1. Confirm the exact HF export command or converter configuration and explain

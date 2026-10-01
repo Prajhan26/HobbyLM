@@ -1,0 +1,11 @@
+{
+  "status": "frozen_research_only_not_release_criteria",
+  "source_revision": "f4b8557098c01fd42195f32feee3a3275dfbfbe3",
+  "candidate_context": 4096,
+  "parity_lengths": [512, 2048, 3900, 4096],
+  "parity_variants": ["archive", "science", "code"],
+  "retrieval_lengths": [1024, 2048, 3900],
+  "retrieval_positions": [0.1, 0.5, 0.9],
+  "retrieval_codes": ["BIRCH-741", "ORBIT-206"],
+  "retrieval_max_new_tokens": 16
+}

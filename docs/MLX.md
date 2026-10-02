@@ -73,7 +73,7 @@ expert-routing checks.
 - Native sparse selected-expert computation through MLX gather matrix multiplies
 - Per-layer KV caching for incremental decoding
 - GPT-2 tokenization and the confirmed `SYSTEM:` / `USER:` / `ASSISTANT:` format
-- Terminal sessions include recent turns within the 1,024-token context; `/new` clears them
+- The CLI pins the audited 4K-configured revision; terminal sessions include recent turns within its 4,096-token context and `/new` clears them
 - Greedy or temperature sampling with a repetition penalty
 
 ## Deliberately deferred
@@ -97,3 +97,13 @@ window is required. Production serving and continuous batching remain deferred.
 5. Cached decoding matches uncached logits, tokens, and expert routes.
 6. Memory and tokens-per-second are recorded on at least one target Mac.
 7. The README states the model's capability limits and supported hardware.
+
+## 4K candidate status
+
+The implementation loads and runs the pinned 4K-configured FP32 model on M1 Max. This is not yet a
+fully validated 4K release. The frozen M1 run recorded 6/10 calling, 3/10 instruction-following,
+9/10 repetition, 16/18 retrieval, 11/12 next-token matches, and 4/12 strict token-plus-expert-set
+parity. Six of 16 mismatched routing boundaries were exact FP32 ties; ten were numerical reorderings
+after accumulated backend drift. See `docs/MLX_4K_M1_MAX_REVIEW.md` for the complete evidence and
+release decision. These results must remain visible and must not be converted into a pass by changing
+router behavior or lowering criteria after the run.

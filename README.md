@@ -80,9 +80,16 @@ hobbylm-mlx --prompt "Explain sparse routing in one sentence."
 ```
 
 The MLX path uses native selected-expert matrix multiplies and parity-tested KV-cached decoding.
-Interactive sessions include recent turns within the 1,024-token context; `/new` clears the session.
+The CLI pins the tested 4K-configured Hugging Face revision and interactive sessions retain recent
+turns within its 4,096-token context; `/new` clears the session. Use `--revision` only when deliberately
+testing another immutable revision.
 Quantization, RAG, multimodal inputs, and the diffusion decoder remain outside the v1 scope. See
 [`docs/MLX.md`](docs/MLX.md) for the validation gate and roadmap.
+
+The 4K path is currently a research candidate, not a fully validated release. On the M1 Max frozen
+run it completed inference, but scored 6/10 calling, 3/10 instruction following, and 9/10 repetition;
+long-context retrieval was 16/18 with both misses at the early position of 3,900-token prompts.
+PyTorch reproduced those retrieval misses. Do not use this model for high-stakes decisions.
 
 ## Training it — `training/` + Modal
 

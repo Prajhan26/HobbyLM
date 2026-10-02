@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import time
+from pathlib import Path
 
 import mlx.core as mx
 import numpy as np
@@ -14,6 +15,8 @@ from .weights import load
 
 EOT = 50256
 GPT2_VALID = 50257
+DEFAULT_MODEL = "harims95/hobbylm-1b-broad-sft-3450-hf"
+DEFAULT_REVISION = "ddf46d8f9c651ca3d0a73bb3189a7dc9a9112ce5"
 
 
 def serialize_prompt(
@@ -74,11 +77,12 @@ def main() -> None:
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument(
         "--model",
-        default="harims95/hobbylm-1b-broad-sft-3450-hf",
+        default=DEFAULT_MODEL,
         help="HF repo or local model directory",
     )
     parser.add_argument(
         "--revision",
+        default=DEFAULT_REVISION,
         help="Immutable Hugging Face revision to download (ignored for a local model directory)",
     )
     parser.add_argument("--prompt", help="Single prompt; omit for an interactive session")
@@ -89,11 +93,24 @@ def main() -> None:
     parser.add_argument("--repetition-penalty", type=float, default=1.3)
     args = parser.parse_args()
 
-    print(f"Loading {args.model} on Apple Silicon…", flush=True)
+    if args.max_tokens < 1:
+        parser.error("--max-tokens must be positive")
+    if args.context is not None and args.context < 1:
+        parser.error("--context must be positive")
+
+    revision_note = (
+        f" at revision {args.revision}"
+        if args.revision and not Path(args.model).expanduser().exists()
+        else ""
+    )
+    print(f"Loading {args.model}{revision_note} on Apple Silicon…", flush=True)
     model, cfg = load(args.model, revision=args.revision)
     tokenizer = tiktoken.get_encoding("gpt2")
     context = min(args.context or cfg.max_position_embeddings, cfg.max_position_embeddings)
-    print(f"Ready — {cfg.n_layers} layers, {cfg.n_experts} experts, top-{cfg.top_k}. Processing stays on this Mac.\n")
+    print(
+        f"Ready — {cfg.n_layers} layers, {cfg.n_experts} experts, top-{cfg.top_k}, "
+        f"{context}-token context. Processing stays on this Mac.\n"
+    )
 
     history: list[tuple[str, str]] = []
 

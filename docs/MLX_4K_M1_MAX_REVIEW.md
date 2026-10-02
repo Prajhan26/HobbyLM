@@ -39,9 +39,11 @@ The 4K-configured model loads and executes on Apple Silicon, and many outputs ma
 
 On the same six 3900-token frozen prompts, a PyTorch CPU replay on the M4 used prompt hashes identical to the M1 MLX reports. It also scored 4/6: the two early-position answers were `I` and `1`, and the four middle/late positions returned the correct codes. This is strong evidence that those particular retrieval misses are not MLX-only, though it does not establish retrieval quality beyond this narrow grid.
 
-An M4 FP32 boundary capture reproduced the same eight *indices of mismatched MoE layers* as the M1 reports. Across its 16 mismatched case/layer pairs, six had exact FP32 boundary ties in both backends and ten had nonzero margins with numerical reordering. `code-3900`'s PyTorch expert identities differed from the frozen M1 fixture, so those M4 counts must **not** be presented as definitive M1 tie classifications. The diagnostic needs to run on the target M1 Max.
+The target-M1 FP32 boundary capture reproduced all eight frozen mismatch patterns and all eight PyTorch route references. Across the 16 mismatched case/layer boundaries, six are exact FP32 ties in both backends and ten are numerical reorderings with nonzero top-8 boundary margins. The largest captured PyTorch/MLX router-input absolute difference at one of those boundaries is 0.14683. Therefore backend tie-breaking explains only six boundaries; it does not explain the other ten. Those ten reflect accumulated numerical drift before routing that reorders close expert scores. This classification does not convert any exact token or expert-set mismatch into a pass.
 
-On the M1 Max, after updating `feat/mlx-4k-behavior-eval`, run from the repository root (use the existing Python 3.13 reference environment):
+The supplied focused-diagnostic archive `mlx-4k-routing-diagnostic-json.zip` has SHA-256 `bf1d2d71d632759986ddd5630914c5cd4d3f188ffd4738bdb77b6b10fd4aefa9`. Both captured environments verified the same FP32 weight SHA-256 used by the behavior run. PyTorch used Python 3.13.12 / Torch 2.14.1; MLX used Python 3.14.2 / MLX 0.32.3 on `macOS-26.2-arm64-arm-64bit-Mach-O`.
+
+The completed target-M1 commands were:
 
 ```bash
 .venv-hf-reference-py313/bin/python scripts/diagnose_4k_routing_boundaries.py pytorch \
@@ -58,4 +60,4 @@ PYTHONPATH="$PWD" .venv-mlx-release/bin/python scripts/diagnose_4k_routing_bound
   --output artifacts/mlx-4k-routing-diagnostic
 ```
 
-Send `artifacts/mlx-4k-routing-diagnostic/routing-boundary-report.json` and the two environment JSON files. The script verifies the FP32 weight hash and original prompt hashes. Exact token and expert-set mismatches remain failures; this diagnostic does not change any release criterion.
+The script verified the FP32 weight hash and original prompt hashes. Exact token and expert-set mismatches remain failures; this diagnostic does not change any release criterion.

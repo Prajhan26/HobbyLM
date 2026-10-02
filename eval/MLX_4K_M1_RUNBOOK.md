@@ -28,3 +28,16 @@ If the environments live elsewhere, set `HOBBYLM_MLX_PYTHON` and `HOBBYLM_HF_PYT
 The command completes all 12 parity cases, 18 retrieval cases, and 30 behavior cases per backend. Reports under `artifacts/` contain the pinned revision, weight and prompt hashes, exact token/routing results, retrieval answers, peak MLX memory, and measured speed. Preserve both raw reports, both rubric reports, the comparison report, and the parity/retrieval reports. A nonzero strict parity status is **not** converted into a pass.
 
 Review calling, instruction-following, repetition, and retrieval against the *approved* gates. If failures remain, keep 4K labeled experimental and document them. Do not change router precision, architecture, weights, or the website to make a gate pass. The local M4 pilot scored 6/10 calling, 3/10 instruction, and 9/10 repetition on both PyTorch and MLX; 26/30 output-ID sequences matched. Those figures are a warning, not M1 Max results.
+
+For a manual candidate smoke test after the research run, install the CLI in a Python 3.10–3.13 MLX environment and pin the same revision:
+
+```bash
+.venv-mlx-release/bin/python -m pip install -e .
+.venv-mlx-release/bin/python -m mlx_hobbylm.chat \
+  --model harims95/hobbylm-1b-broad-sft-3450-hf \
+  --revision ddf46d8f9c651ca3d0a73bb3189a7dc9a9112ce5 \
+  --context 4096 --temperature 0 \
+  --prompt "Explain what a sparse expert is in one sentence."
+```
+
+If the MLX environment uses Python 3.14, make a separate Python 3.13 environment for this package instead; `pyproject.toml` currently supports Python below 3.14. A smoke test is not certification.

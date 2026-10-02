@@ -120,19 +120,28 @@ def load_local(model_dir: str | Path) -> tuple[HobbyLM, HobbyLMConfig]:
     return model, cfg
 
 
-def download(repo_id: str, cache_dir: str | Path | None = None) -> Path:
+def download(
+    repo_id: str,
+    cache_dir: str | Path | None = None,
+    revision: str | None = None,
+) -> Path:
     from huggingface_hub import snapshot_download
 
     path = snapshot_download(
         repo_id,
         cache_dir=str(cache_dir) if cache_dir else None,
+        revision=revision,
         allow_patterns=["config.json", "generation_config.json", "model.safetensors"],
     )
     return Path(path)
 
 
-def load(repo_or_path: str, cache_dir: str | Path | None = None):
+def load(
+    repo_or_path: str,
+    cache_dir: str | Path | None = None,
+    revision: str | None = None,
+):
     path = Path(repo_or_path).expanduser()
     if not path.exists():
-        path = download(repo_or_path, cache_dir)
+        path = download(repo_or_path, cache_dir, revision)
     return load_local(path)

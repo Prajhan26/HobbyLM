@@ -77,6 +77,10 @@ def main() -> None:
         default="harims95/hobbylm-1b-broad-sft-3450-hf",
         help="HF repo or local model directory",
     )
+    parser.add_argument(
+        "--revision",
+        help="Immutable Hugging Face revision to download (ignored for a local model directory)",
+    )
     parser.add_argument("--prompt", help="Single prompt; omit for an interactive session")
     parser.add_argument("--system", default="", help="Optional system instruction")
     parser.add_argument("--max-tokens", type=int, default=120)
@@ -86,7 +90,7 @@ def main() -> None:
     args = parser.parse_args()
 
     print(f"Loading {args.model} on Apple Silicon…", flush=True)
-    model, cfg = load(args.model)
+    model, cfg = load(args.model, revision=args.revision)
     tokenizer = tiktoken.get_encoding("gpt2")
     context = min(args.context or cfg.max_position_embeddings, cfg.max_position_embeddings)
     print(f"Ready — {cfg.n_layers} layers, {cfg.n_experts} experts, top-{cfg.top_k}. Processing stays on this Mac.\n")

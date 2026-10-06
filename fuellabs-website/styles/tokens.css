@@ -7,7 +7,13 @@
   --color-line: #d8d4c9;
   --color-focus: #638b17;
 
-  --font-editorial: "General Sans", "Helvetica Neue", Arial, sans-serif;
+  --signal-square-size: 0.22em;
+  --signal-square-gap: 0.16em;
+  --brand-square-size: 0.26em;
+  --brand-square-gap: 0.18em;
+
+  --font-editorial: var(--general-sans), "Helvetica Neue", Arial, sans-serif;
+  --font-article-body: var(--montserrat), "Helvetica Neue", Arial, sans-serif;
   --font-wordmark: var(--plex-sans), "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--plex-mono), "SFMono-Regular", Consolas, monospace;
 

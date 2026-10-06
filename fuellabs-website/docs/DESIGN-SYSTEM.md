@@ -15,13 +15,22 @@ This document is the visual source of truth. The live token values are in `style
 
 ## Typography
 
-- Editorial display, headings, intros, body and navigation: General Sans 400/500
+- Typography v2 is the locked implementation direction. The recoverable v1 baseline is Git tag `website-v1`.
+- Editorial display, headings, article titles, article decks, navigation and interface copy: General Sans 400/500
+- Research-list summaries and long-form article prose: Montserrat 400; use 500 only for limited semantic emphasis
 - Wordmark: IBM Plex Sans 500
 - Technical labels, status and code: IBM Plex Mono 400/500
 
-Use the semantic CSS classes and tokens (`display`, `section-title`, `intro-copy`, `body-copy`, `eyebrow`, `caption`). Page-specific font sizes require a written reason and screenshot review.
+Use the semantic CSS classes and tokens (`display`, `section-title`, `intro-copy`, `body-copy`, `article-body-copy`, `eyebrow`, `caption`). Page-specific font sizes require a written reason and screenshot review. Decorative eyebrows and decorative section numbering are not part of v2; monospace labels are reserved for genuine metadata and technical information.
 
-General Sans is currently loaded from Fontshare. Before public production, acquire and self-host the permitted webfont files to remove a third-party runtime dependency.
+General Sans, Montserrat and the IBM Plex faces are self-hosted through `next/font/local`. Keep the source files and their usage limited to the weights above.
+
+## Desktop hero
+
+- Copy is sentence case and intentionally breaks into two lines: `An independent` / `AI research lab.`
+- The heading uses General Sans, not the wordmark face.
+- The lime square follows the final period and uses the shared `0.22em` proportion.
+- The shared wordmark remains unchanged in the header, opening curtain and footer.
 
 ## Layout
 

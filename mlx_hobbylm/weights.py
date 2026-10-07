@@ -28,7 +28,11 @@ def quantize_model(model: HobbyLM, config: dict) -> None:
 
     config = dict(config)
     scope = config.pop("scope", "all_weights_except_moe_router")
-    if scope not in {"all_weights_except_moe_router", "routed_experts_only"}:
+    if scope not in {
+        "all_weights_except_moe_router",
+        "routed_experts_only",
+        "routed_expert_down_only",
+    }:
         raise ValueError(f"Unsupported MLX quantization scope: {scope}")
 
     def predicate(path: str, module: nn.Module) -> bool:
@@ -39,6 +43,10 @@ def quantize_model(model: HobbyLM, config: dict) -> None:
             return False
         if scope == "routed_experts_only":
             return ".ffn.experts.layers." in path and hasattr(module, "to_quantized")
+        if scope == "routed_expert_down_only":
+            return path.endswith(".ffn.experts.layers.down_proj") and hasattr(
+                module, "to_quantized"
+            )
         return hasattr(module, "to_quantized")
 
     nn.quantize(model, class_predicate=predicate, **config)

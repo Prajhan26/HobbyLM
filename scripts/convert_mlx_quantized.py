@@ -33,7 +33,11 @@ def main() -> None:
     parser.add_argument("--group-size", type=int, default=32)
     parser.add_argument(
         "--scope",
-        choices=("all_weights_except_moe_router", "routed_experts_only"),
+        choices=(
+            "all_weights_except_moe_router",
+            "routed_experts_only",
+            "routed_expert_down_only",
+        ),
         default="routed_experts_only",
     )
     args = parser.parse_args()

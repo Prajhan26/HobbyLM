@@ -14,6 +14,7 @@ echo "[1/7] Quantized module round-trip"
 echo "[2/7] Artifact structure, provenance, strict loading, and FP32 router"
 "$PYTHON_BIN" scripts/validate_mlx_quantized_artifact.py \
   --model "$CANDIDATE_MODEL" \
+  --bits 8 \
   --report "$REPORT_DIR/artifact.json"
 
 echo "[3/7] FP32 frozen prompt suite"

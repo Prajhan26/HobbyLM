@@ -23,6 +23,16 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
+    parser.add_argument("--bits", type=int, choices=(4, 8), required=True)
+    parser.add_argument(
+        "--scope",
+        choices=(
+            "all_weights_except_moe_router",
+            "routed_experts_only",
+            "routed_expert_down_only",
+        ),
+        default="routed_experts_only",
+    )
     args = parser.parse_args()
 
     config_path = args.model / "config.json"
@@ -38,9 +48,9 @@ def main() -> None:
     failures: list[str] = []
     expected_quantization = {
         "group_size": 32,
-        "bits": 8,
+        "bits": args.bits,
         "mode": "affine",
-        "scope": "routed_experts_only",
+        "scope": args.scope,
     }
     if quantization != expected_quantization:
         failures.append(f"unexpected quantization config: {quantization}")

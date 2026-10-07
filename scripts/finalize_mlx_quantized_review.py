@@ -39,6 +39,18 @@ def main() -> None:
     if pass_to_fail:
         failures.append("manual_review_found_pass_to_fail_regressions")
 
+    remaining = (
+        [
+            "package a public-facing model card",
+            "upload to the chosen Hugging Face organization",
+            "verify a clean download and CLI run from the immutable public revision",
+        ]
+        if not failures
+        else [
+            "do not publish this weight file",
+            "develop and independently validate a less aggressive quantization recipe",
+        ]
+    )
     decision = {
         "status": "approved_for_packaging" if not failures else "rejected",
         "public_release_complete": False,
@@ -54,11 +66,7 @@ def main() -> None:
             "router_expert_set_agreement_on_identical_tokens"
         ],
         "failures": failures,
-        "remaining_before_public_release": [
-            "package a public-facing model card",
-            "upload to the chosen Hugging Face organization",
-            "verify a clean download and CLI run from the immutable public revision"
-        ],
+        "remaining_before_public_release": remaining,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(decision, indent=2) + "\n")

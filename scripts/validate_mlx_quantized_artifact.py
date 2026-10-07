@@ -36,7 +36,13 @@ def main() -> None:
     manifest = json.loads(manifest_path.read_text())
     quantization = config.get("quantization")
     failures: list[str] = []
-    if quantization != {"group_size": 32, "bits": 8, "mode": "affine"}:
+    expected_quantization = {
+        "group_size": 32,
+        "bits": 8,
+        "mode": "affine",
+        "scope": "routed_experts_only",
+    }
+    if quantization != expected_quantization:
         failures.append(f"unexpected quantization config: {quantization}")
     if config.get("mlx_router_precision") != "float32":
         failures.append("config does not declare an FP32 router")

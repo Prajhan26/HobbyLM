@@ -31,6 +31,11 @@ def main() -> None:
     parser.add_argument("--output", required=True)
     parser.add_argument("--bits", type=int, choices=(4, 8), default=8)
     parser.add_argument("--group-size", type=int, default=32)
+    parser.add_argument(
+        "--scope",
+        choices=("all_weights_except_moe_router", "routed_experts_only"),
+        default="routed_experts_only",
+    )
     args = parser.parse_args()
 
     output = Path(args.output)
@@ -43,6 +48,7 @@ def main() -> None:
         "group_size": args.group_size,
         "bits": args.bits,
         "mode": "affine",
+        "scope": args.scope,
     }
     quantize_model(model, quantization)
     mx.eval(model.parameters())
@@ -61,7 +67,7 @@ def main() -> None:
     config["quantization"] = quantization
     config["quantization_config"] = quantization
     config["mlx_router_precision"] = "float32"
-    config["mlx_quantization_scope"] = "weight_only_except_moe_router"
+    config["mlx_quantization_scope"] = args.scope
     config["mlx_source_model"] = args.source_model_id or args.model
     if args.source_revision:
         config["mlx_source_revision"] = args.source_revision
@@ -85,6 +91,7 @@ def main() -> None:
         "bits": args.bits,
         "group_size": args.group_size,
         "mode": "affine",
+        "scope": args.scope,
         "weight_only": True,
         "router_precision": "float32",
         "router_quantized": False,

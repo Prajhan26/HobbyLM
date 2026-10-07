@@ -18,11 +18,18 @@ def _quantization_config(raw: dict) -> dict | None:
     missing = required - config.keys()
     if missing:
         raise ValueError(f"Incomplete MLX quantization config: missing {sorted(missing)}")
-    return {key: config[key] for key in required}
+    result = {key: config[key] for key in required}
+    result["scope"] = config.get("scope", "all_weights_except_moe_router")
+    return result
 
 
 def quantize_model(model: HobbyLM, config: dict) -> None:
     """Quantize weight-bearing layers while preserving FP32 MoE routing."""
+
+    config = dict(config)
+    scope = config.pop("scope", "all_weights_except_moe_router")
+    if scope not in {"all_weights_except_moe_router", "routed_experts_only"}:
+        raise ValueError(f"Unsupported MLX quantization scope: {scope}")
 
     def predicate(path: str, module: nn.Module) -> bool:
         # The sparse router consumes FP32 hidden states and must remain a
@@ -30,6 +37,8 @@ def quantize_model(model: HobbyLM, config: dict) -> None:
         # quantizable modules and therefore remain in their source precision.
         if path.endswith("ffn.gate"):
             return False
+        if scope == "routed_experts_only":
+            return ".ffn.experts.layers." in path and hasattr(module, "to_quantized")
         return hasattr(module, "to_quantized")
 
     nn.quantize(model, class_predicate=predicate, **config)

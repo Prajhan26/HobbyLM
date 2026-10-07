@@ -30,7 +30,12 @@ def main() -> None:
         top_k=2,
         max_position_embeddings=64,
     )
-    quantization = {"group_size": 32, "bits": 8, "mode": "affine"}
+    quantization = {
+        "group_size": 32,
+        "bits": 8,
+        "mode": "affine",
+        "scope": "routed_experts_only",
+    }
     model = HobbyLM(cfg)
     quantize_model(model, quantization)
     mx.eval(model.parameters())

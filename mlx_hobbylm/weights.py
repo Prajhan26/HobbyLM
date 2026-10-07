@@ -5,8 +5,34 @@ import json
 from pathlib import Path
 
 import mlx.core as mx
+import mlx.nn as nn
 
 from .model import HobbyLM, HobbyLMConfig
+
+
+def _quantization_config(raw: dict) -> dict | None:
+    config = raw.get("quantization") or raw.get("quantization_config")
+    if not config:
+        return None
+    required = {"group_size", "bits", "mode"}
+    missing = required - config.keys()
+    if missing:
+        raise ValueError(f"Incomplete MLX quantization config: missing {sorted(missing)}")
+    return {key: config[key] for key in required}
+
+
+def quantize_model(model: HobbyLM, config: dict) -> None:
+    """Quantize weight-bearing layers while preserving FP32 MoE routing."""
+
+    def predicate(path: str, module: nn.Module) -> bool:
+        # The sparse router consumes FP32 hidden states and must remain a
+        # regular Linear layer with FP32 weights. Expert bias and norms are not
+        # quantizable modules and therefore remain in their source precision.
+        if path.endswith("ffn.gate"):
+            return False
+        return hasattr(module, "to_quantized")
+
+    nn.quantize(model, class_predicate=predicate, **config)
 
 
 def _adapt_native_weights(raw: dict[str, mx.array], cfg: HobbyLMConfig) -> dict[str, mx.array]:
@@ -111,10 +137,17 @@ def _adapt_weights(raw: dict[str, mx.array], cfg: HobbyLMConfig) -> dict[str, mx
 
 def load_local(model_dir: str | Path) -> tuple[HobbyLM, HobbyLMConfig]:
     model_dir = Path(model_dir)
-    cfg = HobbyLMConfig.from_dict(json.loads((model_dir / "config.json").read_text()))
+    raw_config = json.loads((model_dir / "config.json").read_text())
+    cfg = HobbyLMConfig.from_dict(raw_config)
     model = HobbyLM(cfg)
     raw = mx.load(str(model_dir / "model.safetensors"))
-    model.load_weights(list(_adapt_weights(raw, cfg).items()), strict=True)
+    quantization = _quantization_config(raw_config)
+    if quantization:
+        quantize_model(model, quantization)
+        weights = raw
+    else:
+        weights = _adapt_weights(raw, cfg)
+    model.load_weights(list(weights.items()), strict=True)
     model.eval()
     mx.eval(model.parameters())
     return model, cfg

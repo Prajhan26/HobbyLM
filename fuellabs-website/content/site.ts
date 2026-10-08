@@ -6,6 +6,6 @@ export const researchArticles = [
 ] as const;
 
 export const founders = [
-  { id: "prajhan", name: "Prabhu Rajhan @ Prajhan", alt: "Engraved black-and-white portrait of Prabhu Rajhan" },
-  { id: "hariharan", name: "Hariharan", alt: "Engraved black-and-white portrait of Hariharan" },
+  { id: "prajhan", name: "Prabhu Rajhan @ Prajhan", xUrl: "https://x.com/Prajhan_026", alt: "Engraved black-and-white portrait of Prabhu Rajhan" },
+  { id: "hariharan", name: "Hariharan", xUrl: "https://x.com/hariharanms95", alt: "Engraved black-and-white portrait of Hariharan" },
 ] as const;

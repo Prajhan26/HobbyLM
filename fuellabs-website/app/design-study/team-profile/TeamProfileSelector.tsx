@@ -35,14 +35,16 @@ export function TeamProfileSelector() {
       <section className={styles.selector} aria-label="Select a co-founder">
         <p>Co-founders</p>
         {founders.map((founder) => (
-          <button
-            type="button"
-            key={founder.id}
-            aria-pressed={active === founder.id}
-            onClick={() => setActive(founder.id)}
-          >
-            <span className={styles.founderName}>{founder.name}</span>
-          </button>
+          <div className={styles.selectorRow} key={founder.id}>
+            <button
+              type="button"
+              aria-pressed={active === founder.id}
+              onClick={() => setActive(founder.id)}
+            >
+              <span className={styles.founderName}>{founder.name}</span>
+            </button>
+            <a className={styles.socialLink} href={founder.xUrl} target="_blank" rel="noreferrer" aria-label={`${founder.name} on X`}>X</a>
+          </div>
         ))}
       </section>
     </div>

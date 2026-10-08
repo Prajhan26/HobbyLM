@@ -37,6 +37,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: "fuellabs. — Independent AI research lab", template: "%s — fuellabs." },
   description: "An independent AI research lab building HobbyLM from scratch.",
+  icons: {
+    icon: [{ url: "/favicon-lime-v2.svg", type: "image/svg+xml" }],
+    shortcut: "/favicon-lime-v2.svg",
+  },
   openGraph: {
     title: "fuellabs.",
     description: "An independent AI research lab building HobbyLM from scratch.",

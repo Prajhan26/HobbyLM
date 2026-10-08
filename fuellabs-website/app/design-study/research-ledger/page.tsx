@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 
 const covers: Record<string, string> = {
   "pretraining-hobbylm": "/research/covers/pretraining-hobbylm-v1.jpg",
-  "hobbylm-architecture": "/diagrams/figure-03-iso-still.png",
-  "post-training-and-sft": "/research/covers/context-window-sft-v1.jpg",
+  "hobbylm-architecture": "/research/covers/hobbylm-architecture-glass-v1.png",
+  "post-training-and-sft": "/research/covers/context-window-sft-v2.jpg",
 };
 
 export default function ResearchLedgerStudy() {
@@ -39,7 +39,7 @@ export default function ResearchLedgerStudy() {
                 <Image src={covers[article.slug]} fill sizes="(max-width: 800px) 100vw, 33vw" alt="" />
                 <span className={styles.scrim} />
                 <span className={styles.cardContent}>
-                  <span className={styles.cardMeta}><span>{article.number}</span><span>{article.status}</span></span>
+                  <span className={styles.cardMeta}><span>{article.number}</span>{published ? <span>{article.status}</span> : null}</span>
                   <strong>{article.title}</strong>
                   <small>{article.summary}</small>
                   {published ? <span className={styles.explore}>Explore the research</span> : null}

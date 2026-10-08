@@ -4,11 +4,8 @@
 .portrait img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
 .selector { padding-block: var(--space-6); border-block: var(--hairline); }
 .selector p { margin: 0; padding: 0 var(--space-4) var(--space-3); color: var(--color-muted); font-size: 0.9375rem; }
-.selectorRow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
-.selector button { position: relative; isolation: isolate; display: grid; width: 100%; min-height: 3.25rem; padding: var(--space-3) var(--space-4); align-items: center; border: 0; background: transparent; cursor: pointer; grid-template-columns: 1fr; text-align: left; font-size: clamp(.9375rem, 1.15vw, 1.125rem); letter-spacing: -.015em; }
-.selector button::after { position: absolute; z-index: -1; inset: .25rem 0; content: ""; background: var(--color-lime); transform: scaleX(0); transform-origin: left; transition: transform 220ms cubic-bezier(.22,1,.36,1); }
-.selector button:hover::after, .selector button[aria-pressed="true"]::after { transform: scaleX(1); }
+.profileLink { position: relative; isolation: isolate; display: flex; width: 100%; min-height: 3.25rem; padding: var(--space-3) var(--space-4); align-items: center; color: var(--color-ink); text-align: left; text-decoration: none; font-size: clamp(.9375rem, 1.15vw, 1.125rem); letter-spacing: -.015em; }
+.profileLink::after { position: absolute; z-index: -1; inset: .25rem 0; content: ""; background: var(--color-lime); transform: scaleX(0); transform-origin: left; transition: transform 220ms cubic-bezier(.22,1,.36,1); }
+.profileLink:hover::after, .profileLink:focus-visible::after, .profileLink[data-active="true"]::after { transform: scaleX(1); }
 .founderName { display: inline-block; white-space: nowrap; }
-.socialLink { display: inline-flex; min-width: 3.25rem; min-height: 3.25rem; align-items: center; justify-content: center; color: var(--color-muted); font-family: var(--font-mono); font-size: .75rem; text-decoration: none; }
-.socialLink:hover, .socialLink:focus-visible { color: var(--color-ink); text-decoration: underline; text-underline-offset: .25rem; }
 @media (max-width: 50rem) { .content { display: flex; min-height: auto; flex-direction: column; align-items: stretch; } .portraits { padding: var(--space-16) 0 0; gap: var(--space-2); } .portrait { width: 50%; } }

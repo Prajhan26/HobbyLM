@@ -32,19 +32,22 @@ export function TeamProfileSelector() {
         </div>
       </section>
 
-      <section className={styles.selector} aria-label="Select a co-founder">
+      <section className={styles.selector} aria-label="Fuel Labs co-founders">
         <p>Co-founders</p>
         {founders.map((founder) => (
-          <div className={styles.selectorRow} key={founder.id}>
-            <button
-              type="button"
-              aria-pressed={active === founder.id}
-              onClick={() => setActive(founder.id)}
-            >
-              <span className={styles.founderName}>{founder.name}</span>
-            </button>
-            <a className={styles.socialLink} href={founder.xUrl} target="_blank" rel="noreferrer" aria-label={`${founder.name} on X`}>X</a>
-          </div>
+          <a
+            className={styles.profileLink}
+            data-active={active === founder.id}
+            href={founder.xUrl}
+            key={founder.id}
+            target="_blank"
+            rel="noreferrer"
+            onMouseEnter={() => setActive(founder.id)}
+            onFocus={() => setActive(founder.id)}
+            onClick={() => setActive(founder.id)}
+          >
+            <span className={styles.founderName}>{founder.name}</span>
+          </a>
         ))}
       </section>
     </div>

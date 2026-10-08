@@ -10,8 +10,7 @@
 .heroInner {
   display: grid;
   min-height: clamp(27rem, 58svh, 34rem);
-  grid-template-columns: minmax(0, 1.7fr) minmax(16rem, 0.7fr);
-  gap: clamp(4rem, 9vw, 9rem);
+  grid-template-columns: 1fr;
   align-items: center;
   padding-block: clamp(2.5rem, 4.5vw, 4rem);
   border-inline: 1px solid var(--study-border);
@@ -27,7 +26,7 @@
   margin: 0;
   font-size: clamp(3.5rem, 5.25vw, 5.5rem);
   font-weight: 400;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.04em;
   line-height: 0.96;
 }
 
@@ -37,14 +36,6 @@
 
 .heroLine {
   white-space: nowrap;
-}
-
-.heroAside {
-  max-width: 28ch;
-  align-self: center;
-  margin: 0;
-  color: var(--color-muted);
-  line-height: 1.65;
 }
 
 .actions {
@@ -85,6 +76,19 @@
   border-bottom-color: currentColor;
 }
 
+.researchAction {
+  padding: 0.75rem 1.25rem;
+  background: var(--color-lime);
+  color: var(--color-ink);
+}
+
+.researchAction:hover,
+.researchAction:focus-visible {
+  border-bottom-color: transparent;
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
 .index {
   padding-top: clamp(2.5rem, 4.5vw, 4rem);
 }
@@ -114,7 +118,7 @@
 .ruledGrid {
   display: grid;
   width: min(100% - (2 * var(--gutter)), var(--container));
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.38fr) minmax(24rem, 0.92fr);
   margin-inline: auto;
   border: 1px solid var(--study-border);
   border-bottom: 0;
@@ -130,7 +134,7 @@
 }
 
 .columnHeader {
-  min-height: 10rem;
+  min-height: 8.5rem;
 }
 
 .columnHeader h3 {
@@ -154,6 +158,35 @@
 
 .column > .row {
   border-top: 1px solid var(--study-border);
+}
+
+.modelLandscape {
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-paper);
+}
+
+.modelLandscape img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.modelColumn {
+  padding: clamp(1.75rem, 2.6vw, 2.75rem);
+}
+
+.accessColumn {
+  padding: clamp(1.75rem, 2.6vw, 2.75rem);
+}
+
+.accessColumn .columnHeader {
+  min-height: auto;
+  margin-bottom: clamp(2rem, 3.5vw, 3rem);
+}
+
+.accessColumn .columnHeader p {
+  max-width: 30ch;
 }
 
 .row {
@@ -270,11 +303,6 @@ a.row:hover {
 }
 
 @media (max-width: 64rem) {
-  .heroInner {
-    grid-template-columns: minmax(0, 1.4fr) minmax(14rem, 0.6fr);
-    gap: var(--space-16);
-  }
-
   .row {
     grid-template-columns: minmax(0, 1fr);
   }

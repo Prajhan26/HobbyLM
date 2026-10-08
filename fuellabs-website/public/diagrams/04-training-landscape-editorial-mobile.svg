@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Small-Model Training Landscape</title>
+  <desc id="desc">Small-Model Training Landscape. Reported training tokens versus total model parameters. Logarithmic axes. HobbyLM Base: 1.037B total parameters, ~100B scheduled reported tokens (~305M active per token); TinyLlama-1.1B: 1.1B total parameters, 3T reported tokens; Pythia-1B: 1B total parameters, 300B reported tokens; OPT-1.3B: 1.3B total parameters, 200-300B reported tokens (show token range); OLMo-1B: 1B total parameters, 3T reported tokens; OpenELM-1.1B: 1.1B total parameters, 1.5T reported tokens; OpenLM-1B: 1B total parameters, 1.6T reported tokens; MobileLLM-1B: 1B total parameters, 1T reported tokens; Gemma 3 1B: 1B total parameters, 2T reported tokens; SmolLM2-1.7B: 1.7B total parameters, 11T reported tokens; Qwen2.5-1.5B: 1.5B total parameters, 18T reported tokens; Qwen3-1.7B: 1.7B total parameters, 36T reported tokens; Llama 3.2 1B: 1B total parameters, up to 9T reported tokens (label as upper bound); DCLM-1B: 1B total parameters, 4.3T reported tokens; StableLM 2 1.6B: 1.6B total parameters, 2T reported tokens; Granite 3.0 1B-A400M: 1.3B total parameters, 10T reported tokens (400M active per token). A competitive small-model evaluation profile from a comparatively compact reported training budget. Reported token counts are not measures of compute, cost or data quality. Model training recipes and reporting conventions differ.</desc>
+  <rect id="paper" width="900" height="1200" fill="#F2EFE8"/>
+  <g id="header">
+    <text x="48" y="84" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="500" fill="#66665F" letter-spacing="1.6">REPORTED PRETRAINING CONTEXT</text>
+    <text x="48" y="134" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="44" font-weight="500" fill="#11110F" letter-spacing="-0.5">Small-Model Training Landscape</text>
+    <text x="48" y="170" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="400" fill="#66665F">Reported training tokens versus total model parameters</text>
+  </g>
+  <g id="grid-and-axes">
+    <rect x="118" y="603" width="734" height="268.9" fill="#B7F34A" fill-opacity="0.13"/>
+    <line x1="136.9" y1="344" x2="136.9" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="152.8" y1="344" x2="152.8" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="166.7" y1="344" x2="166.7" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="178.9" y1="344" x2="178.9" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="189.8" y1="344" x2="189.8" y2="936" stroke="#D8D4C9" stroke-width="1"/>
+    <line x1="261.5" y1="344" x2="261.5" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="303.5" y1="344" x2="303.5" y2="936" stroke="#D8D4C9" stroke-width="1"/>
+    <line x1="333.3" y1="344" x2="333.3" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="356.4" y1="344" x2="356.4" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="375.2" y1="344" x2="375.2" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="391.2" y1="344" x2="391.2" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="405" y1="344" x2="405" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="417.2" y1="344" x2="417.2" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="428.1" y1="344" x2="428.1" y2="936" stroke="#D8D4C9" stroke-width="1"/>
+    <line x1="499.9" y1="344" x2="499.9" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="541.9" y1="344" x2="541.9" y2="936" stroke="#D8D4C9" stroke-width="1"/>
+    <line x1="571.6" y1="344" x2="571.6" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="594.8" y1="344" x2="594.8" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="613.6" y1="344" x2="613.6" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="629.6" y1="344" x2="629.6" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="643.4" y1="344" x2="643.4" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="655.6" y1="344" x2="655.6" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="666.5" y1="344" x2="666.5" y2="936" stroke="#D8D4C9" stroke-width="1"/>
+    <line x1="738.3" y1="344" x2="738.3" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="780.2" y1="344" x2="780.2" y2="936" stroke="#D8D4C9" stroke-width="1"/>
+    <line x1="810" y1="344" x2="810" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="833.1" y1="344" x2="833.1" y2="936" stroke="#E3DFD5" stroke-width="1"/>
+    <line x1="118" y1="871.8" x2="852" y2="871.8" stroke="#D8D4C9" stroke-width="1"/>
+    <line x1="118" y1="764.6" x2="852" y2="764.6" stroke="#D8D4C9" stroke-width="1"/>
+    <line x1="118" y1="677" x2="852" y2="677" stroke="#D8D4C9" stroke-width="1"/>
+    <line x1="118" y1="569.8" x2="852" y2="569.8" stroke="#D8D4C9" stroke-width="1"/>
+    <line x1="118" y1="431.6" x2="852" y2="431.6" stroke="#D8D4C9" stroke-width="1"/>
+    <line x1="118" y1="344" x2="118" y2="936" stroke="#11110F" stroke-width="1"/>
+    <line x1="118" y1="936" x2="852" y2="936" stroke="#11110F" stroke-width="1"/>
+    <line x1="189.8" y1="936" x2="189.8" y2="942" stroke="#11110F" stroke-width="1"/>
+    <text x="189.8" y="966" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="18" font-weight="400" fill="#66665F" text-anchor="middle">100B</text>
+    <line x1="303.5" y1="936" x2="303.5" y2="942" stroke="#11110F" stroke-width="1"/>
+    <text x="303.5" y="966" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="18" font-weight="400" fill="#66665F" text-anchor="middle">300B</text>
+    <line x1="428.1" y1="936" x2="428.1" y2="942" stroke="#11110F" stroke-width="1"/>
+    <text x="428.1" y="966" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="18" font-weight="400" fill="#66665F" text-anchor="middle">1T</text>
+    <line x1="541.9" y1="936" x2="541.9" y2="942" stroke="#11110F" stroke-width="1"/>
+    <text x="541.9" y="966" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="18" font-weight="400" fill="#66665F" text-anchor="middle">3T</text>
+    <line x1="666.5" y1="936" x2="666.5" y2="942" stroke="#11110F" stroke-width="1"/>
+    <text x="666.5" y="966" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="18" font-weight="400" fill="#66665F" text-anchor="middle">10T</text>
+    <line x1="780.2" y1="936" x2="780.2" y2="942" stroke="#11110F" stroke-width="1"/>
+    <text x="780.2" y="966" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="18" font-weight="400" fill="#66665F" text-anchor="middle">30T</text>
+    <line x1="112" y1="871.8" x2="118" y2="871.8" stroke="#11110F" stroke-width="1"/>
+    <text x="106" y="878" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="18" font-weight="400" fill="#66665F" text-anchor="end">0.8B</text>
+    <line x1="112" y1="764.6" x2="118" y2="764.6" stroke="#11110F" stroke-width="1"/>
+    <text x="106" y="770.8" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="18" font-weight="400" fill="#66665F" text-anchor="end">1B</text>
+    <line x1="112" y1="677" x2="118" y2="677" stroke="#11110F" stroke-width="1"/>
+    <text x="106" y="683.2" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="18" font-weight="400" fill="#66665F" text-anchor="end">1.2B</text>
+    <line x1="112" y1="569.8" x2="118" y2="569.8" stroke="#11110F" stroke-width="1"/>
+    <text x="106" y="575.9" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="18" font-weight="400" fill="#66665F" text-anchor="end">1.5B</text>
+    <line x1="112" y1="431.6" x2="118" y2="431.6" stroke="#11110F" stroke-width="1"/>
+    <text x="106" y="437.7" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="18" font-weight="400" fill="#66665F" text-anchor="end">2B</text>
+    <text x="842" y="861.8" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="16" font-weight="400" fill="#66665F" text-anchor="end" letter-spacing="0.8">~1B MODEL BAND</text>
+    <text x="48" y="326" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="19" font-weight="500" fill="#11110F">↑ Total model parameters (log scale)</text>
+    <text x="485" y="996" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="19" font-weight="500" fill="#11110F" text-anchor="middle">Reported pretraining tokens (log scale) →</text>
+  </g>
+  <g id="peers">
+    <circle cx="541.9" cy="718.8" r="6.5" fill="#A3A097"/>
+    <circle cx="303.5" cy="764.6" r="6.5" fill="#A3A097"/>
+    <line x1="261.5" y1="638.6" x2="303.5" y2="638.6" stroke="#A3A097" stroke-width="2"/>
+    <line x1="261.5" y1="631.6" x2="261.5" y2="645.6" stroke="#A3A097" stroke-width="2"/>
+    <line x1="303.5" y1="631.6" x2="303.5" y2="645.6" stroke="#A3A097" stroke-width="2"/>
+    <circle cx="541.9" cy="764.6" r="6.5" fill="#A3A097"/>
+    <circle cx="470.1" cy="718.8" r="6.5" fill="#A3A097"/>
+    <circle cx="476.8" cy="764.6" r="6.5" fill="#A3A097"/>
+    <circle cx="428.1" cy="764.6" r="6.5" fill="#A3A097"/>
+    <circle cx="499.9" cy="764.6" r="6.5" fill="#A3A097"/>
+    <circle cx="676.4" cy="509.7" r="6.5" fill="#A3A097"/>
+    <circle cx="727.4" cy="569.8" r="6.5" fill="#A3A097"/>
+    <circle cx="799.1" cy="509.7" r="6.5" fill="#A3A097"/>
+    <line x1="625.6" y1="764.6" x2="655.6" y2="764.6" stroke="#A3A097" stroke-width="1.5"/>
+    <path d="M617.6 764.6 l9 -4.5 v9 z" fill="#A3A097"/>
+    <circle cx="655.6" cy="764.6" r="6.5" fill="#A3A097"/>
+    <circle cx="579.1" cy="764.6" r="6.5" fill="#A3A097"/>
+    <circle cx="499.9" cy="538.8" r="6.5" fill="#A3A097"/>
+    <circle cx="666.5" cy="638.6" r="6.5" fill="#A3A097"/>
+  </g>
+  <g id="peer-labels">
+    <text x="560.4" y="726.4" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F">TinyLlama-1.1B</text>
+    <text x="303.5" y="798.3" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F" text-anchor="middle">Pythia-1B</text>
+    <text x="282.5" y="598" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F" text-anchor="middle">OPT-1.3B</text>
+    <text x="282.5" y="619.6" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="16" font-weight="400" fill="#66665F" text-anchor="middle">200-300B</text>
+    <line x1="541.9" y1="775.1" x2="541.9" y2="823.6" stroke="#B9B5AA" stroke-width="1"/>
+    <text x="540.9" y="840.8" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F">OLMo-1B</text>
+    <text x="470.1" y="700.3" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F" text-anchor="middle">OpenELM-1.1B</text>
+    <line x1="476.8" y1="775.1" x2="476.8" y2="877.6" stroke="#B9B5AA" stroke-width="1"/>
+    <text x="475.8" y="894.8" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F">OpenLM-1B</text>
+    <line x1="428.1" y1="775.1" x2="428.1" y2="904.6" stroke="#B9B5AA" stroke-width="1"/>
+    <text x="427.1" y="921.8" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F">MobileLLM-1B</text>
+    <line x1="499.9" y1="775.1" x2="499.9" y2="850.6" stroke="#B9B5AA" stroke-width="1"/>
+    <text x="498.9" y="867.8" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F">Gemma 3 1B</text>
+    <text x="644.4" y="491.2" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F" text-anchor="middle">SmolLM2-1.7B</text>
+    <text x="708.9" y="577.4" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F" text-anchor="end">Qwen2.5-1.5B</text>
+    <text x="791.1" y="491.2" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F" text-anchor="middle">Qwen3-1.7B</text>
+    <text x="674.1" y="756.6" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F">Llama 3.2 1B</text>
+    <text x="674.1" y="778.2" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="16" font-weight="400" fill="#66665F">up to 9T</text>
+    <text x="674.1" y="799.8" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="16" font-weight="400" fill="#66665F">(upper bound)</text>
+    <line x1="579.1" y1="775.1" x2="579.1" y2="796.6" stroke="#B9B5AA" stroke-width="1"/>
+    <text x="578.1" y="813.8" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F">DCLM-1B</text>
+    <text x="518.4" y="546.4" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F">StableLM 2 1.6B</text>
+    <text x="648" y="635.3" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="500" fill="#66665F" text-anchor="end">Granite 3.0 1B-A400M</text>
+    <text x="648" y="656.9" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="16" font-weight="400" fill="#66665F" text-anchor="end">400M active per token</text>
+  </g>
+  <g id="hobbylm">
+    <line x1="189.8" y1="344" x2="189.8" y2="729.2" stroke="#11110F" stroke-width="1" stroke-dasharray="4 4"/>
+    <line x1="189.8" y1="765.2" x2="189.8" y2="936" stroke="#11110F" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="197.8" y="926" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#11110F">~100B</text>
+    <rect x="48" y="204" width="4" height="79" fill="#B7F34A"/>
+    <line x1="48" y1="204" x2="850" y2="204" stroke="#11110F" stroke-width="1"/>
+    <text x="70" y="250" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="34" font-weight="500" fill="#11110F">~100B</text>
+    <text x="70" y="275" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="500" fill="#66665F" letter-spacing="1.1">SCHEDULED TOKENS</text>
+    <line x1="320" y1="218" x2="320" y2="279" stroke="#D8D4C9" stroke-width="1"/>
+    <text x="338" y="250" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="34" font-weight="500" fill="#11110F">1.037B</text>
+    <text x="338" y="275" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="500" fill="#66665F" letter-spacing="1.1">TOTAL PARAMETERS</text>
+    <line x1="588" y1="218" x2="588" y2="279" stroke="#D8D4C9" stroke-width="1"/>
+    <text x="606" y="250" font-family="'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace" font-size="34" font-weight="500" fill="#11110F">~305M</text>
+    <text x="606" y="275" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="500" fill="#66665F" letter-spacing="1.1">ACTIVE PER TOKEN</text>
+    <rect x="176.8" y="734.2" width="26" height="26" fill="#B7F34A" stroke="#11110F" stroke-width="1.5" transform="rotate(45 189.8 747.2)"/>
+    <text x="218.8" y="743.2" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="500" fill="#11110F">HobbyLM Base</text>
+  </g>
+  <g id="statement-and-caveat">
+    <line x1="48" y1="1018" x2="852" y2="1018" stroke="#D8D4C9" stroke-width="1"/>
+    <text x="48" y="1052" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="19" font-weight="500" fill="#11110F">A competitive small-model evaluation profile from a comparatively compact</text>
+    <text x="48" y="1077.7" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="19" font-weight="500" fill="#11110F">reported training budget.</text>
+    <text x="48" y="1110" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="16.5" font-weight="400" fill="#66665F">Reported token counts are not measures of compute, cost or data quality. Model training</text>
+    <text x="48" y="1133.9" font-family="'General Sans', 'Helvetica Neue', Arial, sans-serif" font-size="16.5" font-weight="400" fill="#66665F">recipes and reporting conventions differ.</text>
+  </g>
+</svg>

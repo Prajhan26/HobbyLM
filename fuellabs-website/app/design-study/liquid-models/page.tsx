@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { researchArticles } from "@/content/site";
 import { MotionFigure } from "@/components/figures/MotionFigure";
 import { MlxTerminal } from "@/components/hobbylm/MlxTerminal";
+import { ModelAccess } from "@/components/hobbylm/ModelAccess";
 import { SignalMark } from "@/components/typography/SignalHeading";
 import styles from "./page.module.css";
 
@@ -18,17 +18,14 @@ export default function LiquidModelsStudy() {
         <div className={`container ${styles.heroInner}`}>
           <div className={styles.heroLead}>
             <h1 id="study-title" className={styles.title}>
-              A sparse model,<br /><span className={styles.heroLine}>built from scratch.</span>
+              A sparse model,<br /><span className={styles.heroLine}>built from scratch<SignalMark /></span>
             </h1>
             <div className={styles.actions}>
               <Link className={styles.primaryAction} href="/hobbylm">Meet HobbyLM</Link>
-              <Link className={styles.textAction} href="/research">Read the research</Link>
+              <Link className={`${styles.textAction} ${styles.researchAction}`} href="/research">Read the research</Link>
             </div>
           </div>
 
-          <p className={styles.heroAside}>
-            Fuel Labs documents how HobbyLM is built, trained, and evaluated. Articles publish when their evidence and review are complete.
-          </p>
         </div>
       </section>
 
@@ -36,45 +33,37 @@ export default function LiquidModelsStudy() {
         <div className={`container ${styles.indexIntro}`}>
           <div>
             <h2 id="model-index-title">Explore the work</h2>
-            <p>A model record and its research record, presented together.</p>
+            <p>The model, ways to use it, and its technical record.</p>
           </div>
           <Link className={styles.textAction} href="/research">All research</Link>
         </div>
 
         <div className={styles.ruledGrid}>
-          <section className={styles.column} aria-labelledby="model-column-title">
+          <section className={`${styles.column} ${styles.modelColumn}`} aria-labelledby="model-column-title">
             <header className={styles.columnHeader}>
-              <h3 id="model-column-title">Model</h3>
-              <p>The current Fuel Labs language-model project.</p>
+              <h3 id="model-column-title">Model<SignalMark /></h3>
+              <p>HobbyLM</p>
             </header>
-            <a className={styles.row} href="#selective-routing">
-              <span>HobbyLM</span>
-              <span className={styles.rowMeta}>Sparse mixture of experts</span>
-            </a>
+            <figure className={styles.modelLandscape}>
+              <picture>
+                <source media="(max-width: 50rem)" srcSet="/diagrams/04-training-landscape-editorial-mobile.svg" />
+                {/* This chart is already a production-optimized responsive SVG. */}
+                <img
+                  src="/diagrams/04-training-landscape-editorial-desktop.svg"
+                  width="1600"
+                  height="900"
+                  alt="Small-model training landscape comparing reported pretraining tokens and total parameters, with HobbyLM Base highlighted at approximately 100 billion scheduled tokens and 1.037 billion total parameters."
+                />
+              </picture>
+            </figure>
           </section>
 
-          <section className={styles.column} aria-labelledby="research-column-title">
+          <section className={`${styles.column} ${styles.accessColumn}`} aria-labelledby="access-column-title">
             <header className={styles.columnHeader}>
-              <h3 id="research-column-title">Research record</h3>
-              <p>Technical accounts publish as evidence and review are completed.</p>
+              <h3 id="access-column-title">Use HobbyLM<SignalMark /></h3>
+              <p>Explore the model, its weights, source, and local runtimes.</p>
             </header>
-            <div className={styles.rows}>
-              {researchArticles.map((article) => {
-                const published = article.status === "Published";
-                const content = (
-                  <>
-                    <span>{article.title}</span>
-                    <span className={styles.rowMeta}>{article.status}</span>
-                  </>
-                );
-
-                return published ? (
-                  <Link className={styles.row} href={`/research/${article.slug}`} key={article.slug}>{content}</Link>
-                ) : (
-                  <div className={`${styles.row} ${styles.rowDisabled}`} key={article.slug}>{content}</div>
-                );
-              })}
-            </div>
+            <ModelAccess />
           </section>
         </div>
       </section>

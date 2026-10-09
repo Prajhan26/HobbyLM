@@ -6,6 +6,12 @@ import "./globals.css";
 
 const siteUrl = "https://fuellabs.in";
 const allowIndexing = process.env.VERCEL_ENV === "production";
+const socialImage = {
+  url: "/social/fuellabs-share-v1.jpg",
+  width: 1200,
+  height: 630,
+  alt: "HobbyLM sparse architecture visual in the Fuellabs lime signal palette",
+};
 
 const generalSans = localFont({
   src: [
@@ -46,12 +52,14 @@ export const metadata: Metadata = {
     description: "An independent AI research lab building HobbyLM from scratch.",
     url: siteUrl,
     siteName: "fuellabs.",
+    images: [socialImage],
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "fuellabs.",
     description: "An independent AI research lab building HobbyLM from scratch.",
+    images: [{ url: socialImage.url, alt: socialImage.alt }],
   },
   robots: { index: allowIndexing, follow: allowIndexing },
 };

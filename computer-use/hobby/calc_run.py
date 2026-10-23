@@ -3,7 +3,7 @@
   .venv-mlx-release/bin/python backend/capability/macos_agent/calc_run.py --set dev|held_out [--only N]
 MODEL: every action (TYPE <keys> / CLEAR / DONE / UNKNOWN). HARNESS: opens + clears Calculator (setup), shows the display,
 validates (only 0-9 . + - * / =; × ÷ − accepted as the same keys), types through macos-use. CHECKER: calc_checker reads the
-display from the Accessibility API. Nothing the model outputs is corrected or retried.
+display from the Accessibility API. Invalid actions are rejected and not retried.
 """
 from __future__ import annotations
 

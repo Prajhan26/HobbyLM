@@ -6,8 +6,8 @@ Hobby turns plain-English requests into actions on a Mac, one step at a time, ru
 from [**HobbyLM-1B Computer Use**](https://huggingface.co/Hobbylm/hobbylm-1B-computer-use), a LoRA adapter for HobbyLM-1B Instruct.
 This repository holds the app, the harness, the evaluation suite and the training pipeline.
 
-- **90 of 125** sealed requests completed live on macOS (72%)
-- **0.25 s** per decision on a MacBook Air (Apple MLX, FP32)
+- **90 of 125** sealed requests completed live on macOS (72%). The pre-registered pass bars were not met; see [Results](#results).
+- **0.26 s** median per decision on a MacBook Air (Apple MLX, FP32, round-4 adapter, model time)
 - **9 skills:** Calculator, brightness, volume, dark mode, apps, folders, timers, screenshots, calendar events, plus knowing when
   to say no
 - **14 MB** adapter, trained in 4 rounds on 60 H100-minutes
@@ -70,7 +70,10 @@ Press Ctrl-C to quit, or Esc to stop a UI action.
    `mcp-server-macos-use`, everything else through direct macOS calls.
 3. **The result goes back to the model.** The model writes the next action until it writes `DONE`, with at most 6 steps.
 4. **Calendar events are checked and confirmed.** Plain code resolves the date, time and time zone, copies emails exactly from
-   the sentence and looks up Contacts. It always asks **y/n** before adding anything.
+   the sentence and looks up Contacts. Any change to the model's fields is shown, and Hobby always asks **y/n** before adding
+   anything. If the event has an email address, confirming it sends a real invitation.
+
+Invalid actions are rejected. The harness spells `x`, `×`, `÷` and `−` as Calculator keys.
 
 ## Results
 
@@ -81,6 +84,13 @@ Press Ctrl-C to quit, or Esc to stop a UI action.
 - A separate model wrote each round's tests, which were sealed (sha256) before training.
 - Training lookalikes were removed by word-set Jaccard similarity.
 - Every trial ran live on a MacBook Air, with independent checkers reading the result from macOS.
+
+**Pass bars.** Neither pre-registered pass bar was met in round 4:
+
+- **The frozen bar:** every skill had to clear it (Calculator ≥ 90%, refusals ≥ 80%, every other skill ≥ 85%). Only refusals did.
+- **The owner's 75% bar:** apps, folders and refusals cleared it.
+
+The score file records both results (`all_pass: false`, `all_pass_owner_75: false`).
 
 Full details are on the [model card](https://huggingface.co/Hobbylm/hobbylm-1B-computer-use) and in
 [`docs/HOBBYLM_MAC_HELPER_TRAINING_2026-10-20.md`](docs/HOBBYLM_MAC_HELPER_TRAINING_2026-10-20.md).
@@ -93,7 +103,8 @@ Full details are on the [model card](https://huggingface.co/Hobbylm/hobbylm-1B-c
 |---|---|
 | Live sealed evaluation | `.venv/bin/python hobby/hobbymac_run.py --model trained --round r4 --adapter r4 --runtime mlx` |
 | Score a run | `.venv/bin/python hobby/hobbymac_score.py <run folder>` |
-| Harness unit tests (no model) | `.venv/bin/python hobby/test_offline.py` |
+| Harness tests: 10-action parser and allow-list (no model) | `.venv/bin/python hobby/test_harness.py` |
+| System Settings agent parser tests (no model) | `.venv/bin/python hobby/test_offline.py` |
 | Generate training data | `hobby/hobbymac_data.py` |
 | Train an adapter on Modal (H100) | `modal run hobby/hobbymac_modal.py` |
 
@@ -105,7 +116,7 @@ calendar and never send invites.
 | Path | Contents |
 |---|---|
 | `hobby/` | App (`hobby_demo.py`), MLX and PyTorch runtimes, harness, checkers (`*.swift`), calendar tool, evaluation and training code |
-| `data/` | Runtime adapter, retired sealed test sets, regex baselines, fixtures; built tools and run logs (git-ignored) |
+| `data/` | Runtime adapter, retired sealed test sets, regex baselines, fixtures; the Swift tools and run logs are built here (git-ignored) |
 | `docs/` | Training report, engineering and efficiency write-up, Calculator report, demo script |
 | `assets/` | Figures |
 | `models/`, `vendor/` | Created by `setup.sh` (git-ignored) |
@@ -113,8 +124,9 @@ calendar and never send invites.
 ## Licence and credits
 
 - **Licence:** Apache-2.0.
-- **Authors:** built by Hariharan and Prabhurajhan at Fuel Labs.
-- **HobbyLM architecture:** inspired by the original HobbyLM work by Harish, who is not affiliated with Fuel Labs.
-- **Dependency:** `mediar-ai/mcp-server-macos-use` is downloaded by `setup.sh`, not bundled. It is under the Business Source
-  License 1.1, which permits non-commercial and educational production use and converts to MIT on 2028-04-09.
+- **Credits:** Built by Hariharan and Prabhurajhan at Fuel Labs. Architecture based on HobbyLM by Harish.
+- **Dependency:** `mediar-ai/mcp-server-macos-use` is downloaded by `setup.sh`, not bundled.
+  - **Its licence:** Business Source License 1.1, with the Additional Use Grant "Production use is permitted for non-commercial,
+    educational purposes only". It converts to MIT on 2028-04-09.
+  - **Commercial use** needs a licence from Mediar.
 - **Related work:** UC Berkeley's TinyAgent.

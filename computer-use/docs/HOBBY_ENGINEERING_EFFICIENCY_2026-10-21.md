@@ -81,7 +81,7 @@ The biggest efficiency decision wasn't a speed trick. It was **giving the 1B mod
 
 ## 4. Harness and evaluation engineering (fast and trustworthy testing)
 
-1. **The model decides; code only checks and executes.** Invalid actions are rejected, never corrected.
+1. **The model decides; code only checks and executes.** Invalid actions are rejected. The only rewrites are spelling x, ×, ÷, − as Calculator keys and the calendar cross-checks, which are shown to the user before confirmation.
 2. **Independent checkers read the real Mac state:** the Calculator display (Accessibility API), brightness (DisplayServices),
    volume and dark mode (`osascript`), the front app, Finder's window path, and calendar events read back.
 3. **Everything is restored after each test trial:** brightness, volume, dark mode, opened apps and windows, screenshots and

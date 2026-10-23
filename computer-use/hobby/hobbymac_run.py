@@ -4,7 +4,7 @@
 MODEL: every action. HARNESS: setup (record state, quit Calculator), validation, execution, teardown (restore brightness,
 volume, mute, dark mode; quit apps / close Finder windows it opened; delete test screenshots; cancel test timers).
 CHECKERS: calc_checker (display), brightness get, osascript (volume, dark mode, frontmost app, Finder path), files.
-Nothing the model outputs is corrected or retried.
+Invalid actions are rejected and not retried; TYPE spells x, ×, ÷, − as Calculator keys.
 """
 from __future__ import annotations
 

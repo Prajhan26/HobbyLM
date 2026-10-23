@@ -156,9 +156,14 @@ def describe(plan: EventPlan, local_tz: str) -> str:
     return s
 
 
+def as_literal(s: str) -> str:
+    """Escape text for an AppleScript string literal (backslash first, then double quote)."""
+    return s.replace('\\', '\\\\').replace('"', '\\"')
+
+
 def create_event(plan: EventPlan, calendar: str, local_tz: str, with_invite: bool) -> tuple[bool, str]:
     loc = plan.start.astimezone(ZoneInfo(local_tz))
-    title = plan.title.replace('"', "'")
+    title = as_literal(plan.title)
     inv = (f'\n            make new attendee at end of attendees of ev with properties {{email:"{plan.email}"}}'
            if with_invite and plan.email else '')
     code, out = osa(f'''set d to current date
@@ -180,7 +185,7 @@ def create_event(plan: EventPlan, calendar: str, local_tz: str, with_invite: boo
 
 def find_event(calendar: str, title: str) -> list[str]:
     """Checker (read-only): start dates of events with this exact title in the calendar."""
-    t = title.replace('"', "'")
+    t = as_literal(title)
     code, out = osa(f'''tell application "Calendar" to tell calendar "{calendar}"
         set res to ""
         repeat with ev in (every event whose summary is "{t}")

@@ -2,6 +2,8 @@
 .header { max-width: 56rem; text-align: center; }
 .article header h1 { max-width: 15ch; margin: 0 auto var(--space-6); font-size: clamp(3.25rem, 5.5vw, 5.25rem); line-height: .98; text-wrap: balance; }
 .deck { margin-inline: auto; color: var(--color-muted); }
+.codeBlock { max-width: 100%; overflow-x: auto; padding: var(--space-6); border: var(--hairline); background: var(--color-surface); line-height: 1.7; margin-bottom: var(--space-8); }
+.body h2[id] { scroll-margin-top: 7rem; }
 .articleGrid { display: grid; grid-template-columns: 14rem minmax(0, 44rem) 14rem; justify-content: center; gap: clamp(2rem, 4vw, 4rem); padding-top: var(--space-24); }
 .body { max-width: 68ch; grid-column: 2; }
 .lead { font-size: 1.125rem; line-height: 1.75; }

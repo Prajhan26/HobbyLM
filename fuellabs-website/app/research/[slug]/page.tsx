@@ -6,20 +6,23 @@ import { ArticleFigure } from "@/components/research/ArticleFigure";
 import { pretrainingFigures } from "@/content/pretrainingFigures";
 import { researchArticles } from "@/content/site";
 import styles from "./page.module.css";
+import { EmbedArticle } from "@/components/research/EmbedArticle";
 
 export function generateStaticParams() { return researchArticles.filter((article) => article.status === "Published").map(({ slug }) => ({ slug })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const article = researchArticles.find((item) => item.slug === slug);
-  return article?.status === "Published" && slug === "pretraining-hobbylm" ? { title: article.title, alternates: { canonical: `/research/${article.slug}` } } : {};
+  return article?.status === "Published" ? { title: article.title, description: article.summary, alternates: { canonical: `/research/${article.slug}` } } : {};
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const article = researchArticles.find((item) => item.slug === slug);
   if (!article) notFound();
-  if (article.status !== "Published" || slug !== "pretraining-hobbylm") notFound();
+  if (article.status !== "Published") notFound();
+  if (slug === "building-hobbylm-embed" || slug === "why-moe-for-embeddings") return <EmbedArticle slug={slug} />;
+  if (slug !== "pretraining-hobbylm") notFound();
 
   const sections = [
     { id: "derisking", label: "Derisking the full run" },

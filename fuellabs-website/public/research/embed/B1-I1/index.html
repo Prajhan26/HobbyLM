@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B1-I1 Retrieval prefixes</title>
+<script>document.documentElement.classList.replace('no-js','js')</script>
+<style>
+@font-face{font-family:"General Sans";src:url(fonts/general-sans-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"General Sans";src:url(fonts/general-sans-500.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"IBM Plex Mono";src:url(fonts/ibm-plex-mono-400.ttf) format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:"Montserrat";src:url(fonts/montserrat-400.ttf) format("truetype");font-weight:400;font-display:swap}
+:root{--paper:#F2EFE8;--ink:#11110F;--muted:#66665F;--line:#D8D4C9;--lime:#B7F34A;--focus:#638B17}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font-family:"General Sans","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+/* preview page mimics the live article: 832px figure column */
+.page{max-width:880px;margin:0 auto;padding:40px 24px 64px}
+.asset-id{font:400 12px/1.4 "IBM Plex Mono",monospace;color:var(--muted);margin:0 0 24px}
+.prose{font:400 18px/1.55 "General Sans","Helvetica Neue",Arial,sans-serif;max-width:587px;margin:0 auto 56px}
+.prose code{font:400 15px "IBM Plex Mono",monospace}
+
+/* ---------- figure: same construction as the pretraining figures ---------- */
+.fig{margin:0}
+.fig svg{display:block;width:100%;height:auto}
+.fig .m{font-family:"IBM Plex Mono",monospace;fill:#11110F}
+.fig .g{font-family:"General Sans",Arial,sans-serif;fill:#11110F}
+.fig .mu{fill:#66665F}.fig .pa{fill:#F2EFE8}
+.fig svg.mob{display:none}
+@media (max-width:640px){.fig svg.desk{display:none}.fig svg.mob{display:block}}
+
+/* step states: 3 is complete (default, no-JS, reduced motion) */
+.fig .st{transition:opacity 400ms ease,transform 400ms ease,fill 400ms ease}
+.fig[data-step="0"] .pfx{opacity:0}
+.fig[data-step="0"] .tq{transform:translateX(-100px)}
+.fig[data-step="0"] .tp{transform:translateX(-120px)}
+.fig[data-step="0"] .a1,.fig[data-step="1"] .a1{opacity:0}
+.fig[data-step="0"] .a2,.fig[data-step="1"] .a2,.fig[data-step="2"] .a2{opacity:0}
+.fig[data-step="0"] .outs,.fig[data-step="1"] .outs,.fig[data-step="2"] .outs{opacity:0}
+.fig .encr{fill:#66665F}.fig .enct{fill:#F2EFE8}
+.fig[data-step="0"] .encr,.fig[data-step="1"] .encr{fill:#D8D4C9}
+.fig[data-step="0"] .enct,.fig[data-step="1"] .enct{fill:#11110F}
+.fig .scan{opacity:0}
+.fig[data-step="2"] .scan{opacity:1;transform:translateX(var(--sx));transition:transform 1100ms cubic-bezier(.4,0,.2,1),opacity 150ms}
+@media (prefers-reduced-motion:reduce){.fig *{transition:none!important}.fig .scan{display:none}}
+
+/* controls and status: as InteractiveFigure.module.css */
+.controls{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.controls button{display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.controls button:hover:not(:disabled){border-color:var(--ink)}
+.controls button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.controls button:disabled{opacity:.4;cursor:default}
+.controls button:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
+.status{min-height:3.4em;margin:12px 0 0;font:400 12px/1.7 "IBM Plex Mono",monospace;color:var(--muted)}
+.no-js .controls,.no-js .status{display:none}
+/* caption block: as the article renders it */
+.figno{margin:28px 0 0;text-align:center;font:400 14px/1.4 "IBM Plex Mono",monospace}
+figcaption{max-width:540px;margin:14px auto 0;text-align:center;font:400 13px/1.55 "General Sans",Arial,sans-serif;color:var(--muted)}
+@media (max-width:640px){.controls button{width:44px}}
+</style>
+<style>.asset-id,.prose{display:none!important}.page{padding:16px 0!important;margin:0 auto!important;max-width:100%!important}html,body{overflow-x:hidden}</style></head>
+<body>
+<main class="page">
+  <p class="asset-id">B1-I1 · Inline explainer · preview in article context</p>
+  <p class="prose">For retrieval with HobbyLM-Embed, queries use the <code>query:</code> prefix and passages use <code>passage:</code>. A document collection can be embedded ahead of time and stored in a vector index. When a query arrives, the application embeds it and searches that index for related passages.</p>
+
+  <figure class="fig" id="i1" data-step="3" aria-labelledby="i1-cap">
+    <!-- Desktop: 1200-wide drawing, same type scale as the pretraining figures -->
+    <svg class="desk" viewBox="0 0 1200 330" role="img" aria-labelledby="dt dd" style="--sx:195px">
+      <title id="dt">Retrieval prefixes</title>
+      <desc id="dd">A question gains the query: prefix and a passage gains passage:, then both pass through HobbyLM-Embed to produce a query embedding and a passage embedding, which are compared during retrieval. Examples are illustrative.</desc>
+      <rect x="0" y="15" width="14" height="14" fill="#11110F"/><text x="22" y="26" class="m" font-size="12">role prefix</text>
+      <rect x="150.6" y="15.6" width="12.8" height="12.8" fill="#F2EFE8" stroke="#11110F" stroke-width="1.2"/><text x="172" y="26" class="m" font-size="12">input text</text>
+      <rect x="290" y="15" width="14" height="14" fill="#66665F"/><text x="312" y="26" class="m" font-size="12">model</text>
+      <rect x="400.5" y="15" width="5" height="14" fill="#B7F34A" stroke="#11110F" stroke-width="1"/><text x="414" y="26" class="m" font-size="12">encoding</text>
+      <text x="1200" y="26" class="m" font-size="12" text-anchor="end">Conceptual illustration; examples are authored.</text>
+      <line x1="0" y1="50" x2="1200" y2="50" stroke="#D8D4C9" stroke-width="1"/>
+
+      <text x="0" y="94" class="g" font-size="22">Prefixes identify retrieval roles</text>
+      <text x="0" y="118" class="m mu" font-size="12">The same model reads both texts. The prefix says which role each one plays.</text>
+
+      <text x="0" y="150" class="m mu" font-size="12">question</text>
+      <rect x="0.6" y="160.6" width="558.8" height="50.8" fill="#F2EFE8" stroke="#11110F" stroke-width="1.2"/>
+      <g class="st tq"><text x="116" y="190.6" class="m" font-size="13">How do I search my notes?</text></g>
+      <g class="st pfx"><rect x="0" y="160" width="100" height="52" fill="#11110F"/><text x="14" y="190.6" class="m pa" font-size="13">query:</text></g>
+
+      <text x="0" y="242" class="m mu" font-size="12">passage</text>
+      <rect x="0.6" y="252.6" width="558.8" height="70.8" fill="#F2EFE8" stroke="#11110F" stroke-width="1.2"/>
+      <g class="st tp"><text x="136" y="282" class="m" font-size="13">Encode notes and retrieve relevant passages</text><text x="136" y="303" class="m" font-size="13">with a query embedding.</text></g>
+      <g class="st pfx"><rect x="0" y="252" width="120" height="72" fill="#11110F"/><text x="14" y="292.6" class="m pa" font-size="13">passage:</text></g>
+
+      <g class="st a1"><line x1="572" y1="186" x2="624" y2="186" stroke="#11110F" stroke-width="1.5"/><path d="M632 186 l-8 -4.5 v9 z" fill="#11110F"/>
+        <line x1="572" y1="288" x2="624" y2="288" stroke="#11110F" stroke-width="1.5"/><path d="M632 288 l-8 -4.5 v9 z" fill="#11110F"/></g>
+
+      <rect class="st encr" x="644" y="160" width="200" height="164"/>
+      <text class="st enct g" x="744" y="238" font-size="18" text-anchor="middle">HobbyLM-Embed</text>
+      <text class="st enct m" x="744" y="260" font-size="12" text-anchor="middle">same model for both</text>
+      <rect class="scan" x="644.5" y="152" width="5" height="180" fill="#B7F34A" stroke="#11110F" stroke-width="1"/>
+
+      <g class="st a2"><line x1="856" y1="186" x2="908" y2="186" stroke="#11110F" stroke-width="1.5"/><path d="M916 186 l-8 -4.5 v9 z" fill="#11110F"/>
+        <line x1="856" y1="288" x2="908" y2="288" stroke="#11110F" stroke-width="1.5"/><path d="M916 288 l-8 -4.5 v9 z" fill="#11110F"/></g>
+
+      <g class="st outs">
+        <text x="928" y="166" class="m" font-size="12">Query embedding</text><text x="1200" y="166" class="m mu" font-size="12" text-anchor="end">512 dim.</text>
+        <g fill="#11110F" id="dq"></g>
+        <path d="M934 222V256M929.5 227 934 221.5 938.5 227M929.5 251 934 256.5 938.5 251" fill="none" stroke="#66665F" stroke-width="1.3"/>
+        <text x="950" y="243" class="m mu" font-size="12">Compared during retrieval</text>
+        <text x="928" y="276" class="m" font-size="12">Passage embedding</text><text x="1200" y="276" class="m mu" font-size="12" text-anchor="end">512 dim.</text>
+        <g fill="#D8D4C9" id="dp"></g>
+      </g>
+    </svg>
+
+    <!-- Mobile: 480-wide vertical drawing -->
+    <svg class="mob" viewBox="0 0 480 776" role="img" aria-labelledby="mt md" style="--sx:475px">
+      <title id="mt">Retrieval prefixes</title>
+      <desc id="md">A question gains the query: prefix and a passage gains passage:, then both pass through HobbyLM-Embed to produce a query embedding and a passage embedding, which are compared during retrieval. Examples are illustrative.</desc>
+      <rect x="0" y="15" width="14" height="14" fill="#11110F"/><text x="22" y="26" class="m" font-size="13">role prefix</text>
+      <rect x="160.6" y="15.6" width="12.8" height="12.8" fill="#F2EFE8" stroke="#11110F" stroke-width="1.2"/><text x="182" y="26" class="m" font-size="13">input text</text>
+      <rect x="310" y="15" width="14" height="14" fill="#66665F"/><text x="332" y="26" class="m" font-size="13">model</text>
+      <rect x="0.5" y="43" width="5" height="14" fill="#B7F34A" stroke="#11110F" stroke-width="1"/><text x="14" y="54" class="m" font-size="13">encoding</text>
+      <text x="0" y="82" class="m" font-size="13">Conceptual illustration; examples are authored.</text>
+      <line x1="0" y1="100" x2="480" y2="100" stroke="#D8D4C9" stroke-width="1"/>
+
+      <text x="0" y="140" class="g" font-size="24">Prefixes identify retrieval roles</text>
+      <text x="0" y="164" class="m mu" font-size="13">The same model reads both texts.</text>
+      <text x="0" y="182" class="m mu" font-size="13">The prefix says which role each one plays.</text>
+
+      <text x="0" y="216" class="m mu" font-size="13">question</text>
+      <rect x="0.6" y="226.6" width="478.8" height="54.8" fill="#F2EFE8" stroke="#11110F" stroke-width="1.2"/>
+      <g class="st tq"><text x="116" y="258.6" class="m" font-size="14">How do I search my notes?</text></g>
+      <g class="st pfx"><rect x="0" y="226" width="100" height="56" fill="#11110F"/><text x="14" y="258.6" class="m pa" font-size="14">query:</text></g>
+
+      <text x="0" y="314" class="m mu" font-size="13">passage</text>
+      <rect x="0.6" y="324.6" width="478.8" height="84.8" fill="#F2EFE8" stroke="#11110F" stroke-width="1.2"/>
+      <g class="st tp"><text x="136" y="352" class="m" font-size="14">Encode notes and retrieve</text><text x="136" y="374" class="m" font-size="14">relevant passages with a</text><text x="136" y="396" class="m" font-size="14">query embedding.</text></g>
+      <g class="st pfx"><rect x="0" y="324" width="120" height="86" fill="#11110F"/><text x="14" y="371.6" class="m pa" font-size="14">passage:</text></g>
+
+      <g class="st a1"><line x1="240" y1="422" x2="240" y2="452" stroke="#11110F" stroke-width="1.5"/><path d="M240 460 l-4.5 -8 h9 z" fill="#11110F"/></g>
+      <rect class="st encr" x="0" y="470" width="480" height="80"/>
+      <text class="st enct g" x="240" y="506" font-size="20" text-anchor="middle">HobbyLM-Embed</text>
+      <text class="st enct m" x="240" y="530" font-size="13" text-anchor="middle">same model for both</text>
+      <rect class="scan" x="0.5" y="464" width="5" height="92" fill="#B7F34A" stroke="#11110F" stroke-width="1"/>
+      <g class="st a2"><line x1="240" y1="564" x2="240" y2="594" stroke="#11110F" stroke-width="1.5"/><path d="M240 602 l-4.5 -8 h9 z" fill="#11110F"/></g>
+
+      <g class="st outs">
+        <text x="0" y="628" class="m" font-size="13">Query embedding</text><text x="480" y="628" class="m mu" font-size="13" text-anchor="end">512 dim.</text>
+        <g fill="#11110F" id="mq"></g>
+        <path d="M6 680V708M1.5 685 6 679.5 10.5 685M1.5 703 6 708.5 10.5 703" fill="none" stroke="#66665F" stroke-width="1.3"/>
+        <text x="22" y="699" class="m mu" font-size="13">Compared during retrieval</text>
+        <text x="0" y="736" class="m" font-size="13">Passage embedding</text><text x="480" y="736" class="m mu" font-size="13" text-anchor="end">512 dim.</text>
+        <g fill="#D8D4C9" id="mp"></g>
+      </g>
+    </svg>
+
+    <div class="controls" role="group" aria-label="Prefix explanation controls">
+      <button type="button" id="b-play" aria-label="Play explanation" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3.25 12 8l-7 4.75V3.25Z" fill="currentColor"/></svg></button>
+      <button type="button" id="b-prev" aria-label="Previous step"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m10 3.5-4.5 4.5 4.5 4.5" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button type="button" id="b-next" aria-label="Next step"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <p class="status" id="status" aria-live="polite"></p>
+
+    <p class="figno">Figure</p>
+    <figcaption id="i1-cap">Use query: for retrieval queries and passage: for the texts being indexed. Both are encoded by the same model. Examples are illustrative.</figcaption>
+  </figure>
+</main>
+
+<script>
+(function(){'use strict';
+var NS='http://www.w3.org/2000/svg';
+// vector strips: 16 uniform cells (symbolic, no values). Built here; the no-JS view shows labels without cells.
+function strip(id,x,y,w,h){var g=document.getElementById(id),n=16,gap=4,cw=(w-gap*(n-1))/n;
+  for(var i=0;i<n;i++){var r=document.createElementNS(NS,'rect');r.setAttribute('x',(x+i*(cw+gap)).toFixed(2));r.setAttribute('y',y);r.setAttribute('width',cw.toFixed(2));r.setAttribute('height',h);g.appendChild(r)}}
+strip('dq',928,174,272,36);strip('dp',928,284,272,36);
+strip('mq',0,638,480,36);strip('mp',0,746,480,26);
+// the mobile passage needs its final words on a third line
+
+var fig=document.getElementById('i1'),st=document.getElementById('status'),
+    bp=document.getElementById('b-play'),bv=document.getElementById('b-prev'),bn=document.getElementById('b-next');
+var TEXT=['Step 1 of 4. A question and a passage, before any prefix is added.',
+  'Step 2 of 4. Each text gets its role prefix: query: for the question, passage: for the passage. The text itself is unchanged.',
+  'Step 3 of 4. Both pass through the same model, HobbyLM-Embed.',
+  'Step 4 of 4. Each becomes a 512-dimensional embedding, and retrieval compares them. Examples are illustrative.'];
+var HOLD=[700,1000,1300];
+var ICON={play:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3.25 12 8l-7 4.75V3.25Z" fill="currentColor"/></svg>',
+  pause:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 3.25v9.5M11.5 3.25v9.5" stroke="currentColor" stroke-width="1.5"/></svg>',
+  replay:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.1 4.1A5 5 0 1 1 3 8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/><path d="M2.8 3.1v3.6h3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>'};
+var step=3,playing=false,started=false,timer=0;
+function render(){fig.setAttribute('data-step',String(step));st.textContent=TEXT[step];
+  var label=playing?'Pause explanation':step===3&&started?'Replay explanation':step<3&&started?'Resume explanation':'Play explanation';
+  bp.innerHTML=playing?ICON.pause:step===3&&started?ICON.replay:ICON.play;bp.setAttribute('aria-label',label);bp.setAttribute('aria-pressed',String(playing));
+  bv.disabled=step===0;bn.disabled=step===3}
+function schedule(){clearTimeout(timer);if(!playing)return;if(step>=3){playing=false;render();return}
+  timer=setTimeout(function(){step++;if(step===3)playing=false;render();schedule()},HOLD[step])}
+bp.addEventListener('click',function(){if(playing){playing=false;clearTimeout(timer);render();return}
+  started=true;if(step===3){step=0;render();timer=setTimeout(function(){playing=true;render();schedule()},250)}else{playing=true;render();schedule()}});
+function move(n){playing=false;clearTimeout(timer);started=true;step=Math.max(0,Math.min(3,n));render()}
+bv.addEventListener('click',function(){move(step-1)});bn.addEventListener('click',function(){move(step+1)});
+if('IntersectionObserver' in window)new IntersectionObserver(function(es){if(!es[0].isIntersecting&&playing){playing=false;clearTimeout(timer);render()}}).observe(fig);
+document.addEventListener('visibilitychange',function(){if(document.hidden&&playing){playing=false;clearTimeout(timer);render()}});
+var q=new URLSearchParams(location.search);if(q.has('step')){step=+q.get('step');started=true}
+render();
+})();
+</script>
+<script>function reportSize(){parent.postMessage({type:'embed-figure-size',id:"B1-I1",height:document.documentElement.scrollHeight},'*')}new ResizeObserver(reportSize).observe(document.body);document.fonts.ready.then(reportSize);window.addEventListener('load',reportSize);</script></body>
+</html>

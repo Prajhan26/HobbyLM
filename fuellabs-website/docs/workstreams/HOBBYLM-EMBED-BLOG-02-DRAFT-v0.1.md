@@ -64,7 +64,7 @@ A count of active parameters cannot establish query latency, throughput or memor
 
 Index construction and query serving also place different demands on the encoder. Index construction can process a collection in batches. A search request needs a query embedding before retrieval can begin. A deployment evaluation should measure both paths in the settings the application will use.
 
-We evaluated the released model in fp32, with a maximum evaluation length of 512 tokens. That is the precision and length associated with the approved benchmark result in the companion article. The model supports inputs up to **1,024 tokens**; that input limit is separate from the benchmark setting.
+We evaluated the released model in fp32, with a maximum evaluation length of 512 tokens. That is the precision and length associated with the approved benchmark result in the companion article. The model uses 512 tokens by default and up to **2,048 tokens opt-in**. The longer input length is separate from the benchmark setting.
 
 Our reason for choosing MoE was to develop an embedding encoder with conditional expert computation on an architecture we already understood. The release makes that design available for inspection and use. The detailed data and optimization recipe remains internal.
 

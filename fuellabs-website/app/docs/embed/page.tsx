@@ -1,0 +1,6 @@
+import Link from "next/link";
+import styles from "./docs.module.css";
+
+export default function Overview() {
+  return <article className={`${styles.content} ${styles.overview}`}><p className={styles.kicker}>HobbyLM-Embed / Documentation</p><h1>Embeddings for your machine.</h1><p className={styles.lede}>HobbyLM-Embed is an open-weight English embedding model for retrieval, classification, clustering and similarity. Run it locally with Sentence Transformers or your preferred framework.</p><dl className={styles.specs}>{[["Parameters", "140M total · 36M active (excluding embeddings)"], ["Vectors", "512 dimensions"], ["Context", "512 tokens default; up to 2,048 opt-in"], ["Language", "English"], ["License", "Apache-2.0"], ["Evaluation", "62.33 on MTEB(eng, v2)"]].map(([label, value]) => <div className={styles.spec} key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p className={styles.note}>62.33 on MTEB(eng, v2). The model entry and results submission are merged.</p><div className={styles.linkRow}><a href="https://huggingface.co/harims95/hobbylm-embed-140m" target="_blank" rel="noreferrer">Hugging Face ↗</a><a href="https://github.com/fuellabs-ai/hobbylm-embed-140m" target="_blank" rel="noreferrer">GitHub ↗</a><Link href="/docs/embed/quickstart">Start with the quickstart →</Link></div></article>;
+}

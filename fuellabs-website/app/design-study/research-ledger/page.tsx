@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { researchArticles } from "@/content/site";
+import { launchResearchArticles as researchArticles } from "@/content/site";
 import { SignalMark } from "@/components/typography/SignalHeading";
 import styles from "./page.module.css";
 
@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 };
 
 const covers: Record<string, string> = {
+  "building-hobbylm-embed": "/research/embed/B1-C-cover-poster-1920x1080.png",
+  "why-moe-for-embeddings": "/research/covers/why-moe-for-embeddings.jpg",
   "pretraining-hobbylm": "/research/covers/pretraining-hobbylm-v1.jpg",
   "hobbylm-architecture": "/diagrams/figure-03-iso-still.png",
   "post-training-and-sft": "/research/covers/context-window-sft-v1.jpg",

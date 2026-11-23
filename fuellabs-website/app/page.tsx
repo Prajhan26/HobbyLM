@@ -14,7 +14,7 @@ export default function Home() {
           <span aria-hidden="true">fuel<span className={styles.heroLabs}>labs</span></span>
           <span className={styles.heroSignal} aria-hidden="true" />
         </h1>
-        <p className={styles.heroCopy}>An independent AI research lab.</p>
+        <p className={styles.heroCopy}>knowledge is to pass</p>
         <div className={styles.heroLower}>
           <span className={styles.lowerBrand}>fuellabs<span className={styles.lowerSignal} aria-hidden="true" /></span>
           <Link className="arrow-link" href="/hobbylm">Meet HobbyLM</Link>

@@ -1,0 +1,5 @@
+.wrap { margin-block: var(--space-6); overflow: hidden; border: 1px solid var(--color-line); border-radius: 6px; background: var(--color-surface); color: var(--color-ink); }
+.bar { display: flex; justify-content: space-between; align-items: center; min-height: 44px; padding: 2px 10px 2px 16px; border-bottom: var(--hairline); color: var(--color-muted); background: var(--color-paper); font-family: var(--font-editorial); font-size: 12px; }
+.bar button { min-height: 40px; border: 1px solid transparent; background: transparent; color: var(--color-muted); padding: 6px 10px; cursor: pointer; font-family: var(--font-editorial); font-size: 12px; }
+.bar button:hover, .bar button:focus-visible { background: var(--color-lime); color: var(--color-ink); border-color: var(--color-lime); }
+.wrap pre { margin: 0; padding: 20px 16px; overflow-x: auto; font: 13px/1.75 var(--font-mono); tab-size: 2; scrollbar-color: var(--color-line) var(--color-surface); }

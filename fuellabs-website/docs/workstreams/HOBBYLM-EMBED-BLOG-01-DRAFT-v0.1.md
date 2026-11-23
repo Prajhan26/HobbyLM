@@ -1,10 +1,12 @@
-# Building HobbyLM-Embed from scratch
+# HobbyLM-Embed: from training to evaluation.
 
 A text embedding model built on Fuel Labs' sparse architecture.
 
-HobbyLM-Embed achieved **62.33 Mean (Task)** / **57.62 Mean (TaskType)** on MTEB(eng, v2), all **41 tasks** (`mteb 2.27.18`). The results are submitted to the official MTEB leaderboard. We trained it from scratch for text search and similarity and are releasing it as `hobbylm-embed-140m` under Apache-2.0.
+HobbyLM-Embed is an English text embedding model we trained from scratch for search and similarity. It is available on [Hugging Face](https://huggingface.co/harims95/hobbylm-embed-140m) under [Apache-2.0](https://huggingface.co/harims95/hobbylm-embed-140m/blob/main/LICENSE).
 
-The model has **140M total parameters**, with **36M active per token** (excluding embeddings; **8 of 32 experts**), and produces **512-dimensional embeddings**. The evaluation covered all **41 tasks** using `mteb 2.27.18`, fp32 and a maximum input length of 512 tokens. The model supports inputs up to **1,024 tokens**.
+On MTEB(eng, v2), it scored **62.33 Mean (Task)** / **57.62 Mean (TaskType)** across **41 tasks**, using `mteb 2.27.18` in fp32 with a maximum input length of 512 tokens. The [results submission](https://github.com/embeddings-benchmark/results/pull/858) is merged.
+
+The model has **140M total parameters**, with **36M active per token** (excluding embeddings; **8 of 32 experts**), and produces **512-dimensional embeddings**. It uses **512 tokens by default**, with up to **2,048 tokens opt-in**.
 
 Sparse routing limits expert computation per token. The active count excludes the shared embedding table; running cost also depends on the shared computation, implementation and hardware.
 
@@ -13,7 +15,7 @@ Sparse routing limits expert computation per token. The active count excludes th
 ```python
 from sentence_transformers import SentenceTransformer
 
-model = SentenceTransformer("harims95/hobbylm-embed-140m", trust_remote_code=True)
+model = SentenceTransformer("harims95/hobbylm-embed-140m", revision="ea708cee107818fa0c1871eebd26d82a1e3fb1aa", trust_remote_code=True)
 q = model.encode(["how do vaccines work?"], prompt_name="query")
 d = model.encode(["Vaccines train the immune system to ..."], prompt_name="passage")
 print(model.similarity(q, d))
@@ -154,11 +156,11 @@ The categories test different behaviours. Classification evaluates information a
 
 Each category uses its respective task metrics. The scores describe the evaluation profile; the numerical distance between two categories does not measure how much better the model is at one kind of work. For a retrieval application, inspect retrieval behaviour directly alongside the aggregate.
 
-We ran the evaluation with `mteb 2.27.18` in fp32, with a maximum input length of 512 tokens. The supported maximum input length is **1,024 tokens**, but that longer setting was not used for this result. Applications using longer passages should evaluate their own chunking and retrieval settings.
+We ran the evaluation with `mteb 2.27.18` in fp32, with a maximum input length of 512 tokens. Inputs up to **2,048 tokens** have since been tested, but that longer setting was not used for this result. Applications using longer passages should evaluate their own chunking and retrieval settings.
 
 The MTEB entry reports **36% zero-shot** coverage. The aggregate score is therefore not an entirely zero-shot result. The training-task list is public in the [merged MTEB model entry](https://github.com/embeddings-benchmark/mteb/pull/5967).
 
-The results are [submitted to the official MTEB leaderboard](https://github.com/embeddings-benchmark/results/pull/858). The model entry is merged; leaderboard publication is pending the results submission being merged.
+Both the [MTEB model entry](https://github.com/embeddings-benchmark/mteb/pull/5967) and the [results submission](https://github.com/embeddings-benchmark/results/pull/858) are merged.
 
 <!-- Figure 4 / B1-F4: Approved evaluation profile. The table is its accessible text equivalent, not a second visual asset. -->
 
@@ -166,7 +168,18 @@ The results are [submitted to the official MTEB leaderboard](https://github.com/
 
 The release is named `hobbylm-embed-140m`. The model destination is [Hugging Face](https://huggingface.co/harims95/hobbylm-embed-140m), and the implementation destination is [GitHub](https://github.com/fuellabs-ai/hobbylm-embed-140m). The release licence is Apache-2.0.
 
-HobbyLM-Embed is intended for English text. Its output has **512 dimensions**, and its supported input limit is **1,024 GPT-2 tokens**. Token counts are measured after tokenization; a character or word limit is not interchangeable with the token limit.
+Choose the runtime or integration that fits your application:
+
+- [Sentence Transformers](https://huggingface.co/harims95/hobbylm-embed-140m#quickstart): load the reference model on CPU or GPU.
+- [Ollama](https://ollama.com/hariharanms95/hobbylm-embed-140m): run the Q8_0 version locally.
+- [GGUF / llama.cpp](https://huggingface.co/harims95/hobbylm-embed-140m-gguf): use the published weights with the repository's embedding helper.
+- [MLX](https://huggingface.co/harims95/hobbylm-embed-140m-mlx): run the float16 version on Apple silicon.
+- [LangChain package on PyPI](https://pypi.org/project/langchain-hobbylm/): install `langchain-hobbylm` for query and document embedding methods.
+- [LangChain, LlamaIndex and Chroma examples](https://github.com/fuellabs-ai/hobbylm-embed-140m#integrations): follow the tested framework-specific setup.
+
+Ollama's pooling includes the final end-of-text token, so its vectors differ from the reference model. Keep indexing and querying on the same runtime; do not mix vectors from different runtimes in one index.
+
+HobbyLM-Embed is intended for English text. Its output has **512 dimensions**. It uses 512 tokens by default and up to **2,048 tokens opt-in**. With Sentence Transformers, set `model.max_seq_length = 2048` after loading to opt in. Token counts are measured after tokenization; a character or word limit is not interchangeable with the token limit.
 
 Passage boundaries affect what the encoder has to preserve. A passage should contain enough context to answer the queries it is intended to serve. Combining unrelated sections makes the representation responsible for several different subjects, while an isolated fragment can omit information needed to understand it. Chunking should be evaluated as part of the retrieval system.
 
@@ -179,11 +192,11 @@ The benchmark gives a common evaluation setting. Application evaluation supplies
 ### Limitations
 
 - The supported language is English; multilingual performance is not established here.
-- The published score used maximum length 512, while the model supports up to **1,024 tokens**. The score does not establish retrieval quality at the longer limit.
+- The published score used maximum length 512. Inputs up to **2,048 tokens** have been tested separately; the MTEB score above does not establish retrieval quality at that longer limit.
 - Inputs use the GPT-2 tokenizer. Check passage lengths in tokens when setting chunk boundaries.
 - Retrieval requires the `query:` and `passage:` prefixes. Keep their use consistent across indexing and queries.
 
-We are publishing the model and its approved implementation. Training data sources, mixtures and detailed preparation procedures remain internal, along with training hyperparameters and proprietary optimization work.
+We are publishing the model and its approved implementation.
 
 We thank [Jarvis Labs](https://jarvislabs.ai) for providing compute for this work.
 

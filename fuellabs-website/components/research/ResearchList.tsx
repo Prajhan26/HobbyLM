@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { researchArticles } from "@/content/site";
+import { launchResearchArticles as researchArticles } from "@/content/site";
 import styles from "./ResearchList.module.css";
 
 export function ResearchList({ preview = false }: { preview?: boolean }) {

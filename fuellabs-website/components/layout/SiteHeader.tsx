@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import styles from "./SiteHeader.module.css";
 
-const links = [{ href: "/hobbylm", label: "HobbyLM" }, { href: "/research", label: "Research" }, { href: "/team", label: "Team" }];
+const links = [{ href: "/hobbylm", label: "HobbyLM" }, { href: "/docs/embed", label: "Docs" }, { href: "/research", label: "Research" }, { href: "/team", label: "Team" }];
 
 export function SiteHeader() {
   const pathname = usePathname();

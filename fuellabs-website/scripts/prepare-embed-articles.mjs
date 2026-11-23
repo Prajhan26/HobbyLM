@@ -11,7 +11,7 @@ for (const name of ['B1-C-cover.mp4', 'B1-C-cover.webm', 'B1-C-cover-square.mp4'
   fs.copyFileSync(path.join(coverSource, name), path.join(dest, name));
 }
 const articles = [
-  ['building-hobbylm-embed', '01', 'Building HobbyLM-Embed from scratch'],
+  ['building-hobbylm-embed', '01', 'HobbyLM-Embed: from training to evaluation.'],
   ['why-moe-for-embeddings', '02', 'Why we chose MoE for embeddings'],
 ].map(([slug, number, title]) => {
   const markdown = fs.readFileSync(path.join(root, `docs/workstreams/HOBBYLM-EMBED-BLOG-${number}-DRAFT-v0.1.md`), 'utf8');
@@ -24,6 +24,11 @@ for (const id of ids) {
   fs.cpSync(path.join(source, id, 'fonts'), path.join(dir, 'fonts'), { recursive: true });
   const filename = id === 'B1-F2' ? `${id}-fan.html` : `${id}.html`;
   let html = fs.readFileSync(path.join(source, id, filename), 'utf8');
+  if (id === 'B1-F1') {
+    html = html.replaceAll('1,024-token input limit', '512 tokens by default, up to 2,048 tokens opt-in')
+      .replaceAll('MAXIMUM INPUT', 'INPUT LENGTH')
+      .replaceAll('1,024 tokens', '512 default / 2,048 opt-in');
+  }
   html = withAutomaticPlayback(html, id);
   html = html.replace('</head>', `<style>.asset-id,.prose{display:none!important}.page{padding:16px 12px!important;box-sizing:border-box;margin:0 auto!important;max-width:100%!important}html,body{overflow-x:hidden}</style></head>`);
   html = html.replace('</body>', `<script>function reportSize(){parent.postMessage({type:'embed-figure-size',id:${JSON.stringify(id)},height:Math.ceil(document.body.getBoundingClientRect().height)},'*')}new ResizeObserver(reportSize).observe(document.body);document.fonts.ready.then(reportSize);window.addEventListener('load',reportSize);</script></body>`);

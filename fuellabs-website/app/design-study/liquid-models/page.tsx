@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { researchArticles } from "@/content/site";
+import { launchResearchArticles as researchArticles } from "@/content/site";
 import { MotionFigure } from "@/components/figures/MotionFigure";
 import { MlxTerminal } from "@/components/hobbylm/MlxTerminal";
 import { SignalMark } from "@/components/typography/SignalHeading";

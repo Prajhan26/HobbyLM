@@ -33,7 +33,7 @@ body{font-family:"General Sans","Helvetica Neue",Arial,sans-serif;-webkit-font-s
 .figno{margin:28px 0 0;text-align:center;font:400 14px/1.4 "IBM Plex Mono",monospace}
 figcaption{max-width:540px;margin:14px auto 0;text-align:center;font:400 13px/1.55 "General Sans",Arial,sans-serif;color:#66665F}
 </style>
-<style>.asset-id,.prose{display:none!important}.page{padding:16px 0!important;margin:0 auto!important;max-width:100%!important}html,body{overflow-x:hidden}</style></head>
+<style>.asset-id,.prose{display:none!important}.page{padding:16px 12px!important;box-sizing:border-box;margin:0 auto!important;max-width:100%!important}html,body{overflow-x:hidden}</style></head>
 <body>
 <main class="page">
   <p class="asset-id">B2-F1 · Blog 2 Figure 1 · preview in article context</p>
@@ -51,5 +51,5 @@ figcaption{max-width:540px;margin:14px auto 0;text-align:center;font:400 13px/1.
   var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){f.classList.add('in');io.disconnect()}},{threshold:.4});io.observe(f);
 })();
 </script>
-<script>function reportSize(){parent.postMessage({type:'embed-figure-size',id:"B2-F1",height:document.documentElement.scrollHeight},'*')}new ResizeObserver(reportSize).observe(document.body);document.fonts.ready.then(reportSize);window.addEventListener('load',reportSize);</script></body>
+<script>function reportSize(){parent.postMessage({type:'embed-figure-size',id:"B2-F1",height:Math.ceil(document.body.getBoundingClientRect().height)},'*')}new ResizeObserver(reportSize).observe(document.body);document.fonts.ready.then(reportSize);window.addEventListener('load',reportSize);</script></body>
 </html>

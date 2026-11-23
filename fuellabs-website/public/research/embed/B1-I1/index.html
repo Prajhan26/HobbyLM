@@ -58,7 +58,7 @@ body{font-family:"General Sans","Helvetica Neue",Arial,sans-serif;-webkit-font-s
 figcaption{max-width:540px;margin:14px auto 0;text-align:center;font:400 13px/1.55 "General Sans",Arial,sans-serif;color:var(--muted)}
 @media (max-width:640px){.controls button{width:44px}}
 </style>
-<style>.asset-id,.prose{display:none!important}.page{padding:16px 0!important;margin:0 auto!important;max-width:100%!important}html,body{overflow-x:hidden}</style></head>
+<style>.asset-id,.prose{display:none!important}.page{padding:16px 12px!important;box-sizing:border-box;margin:0 auto!important;max-width:100%!important}html,body{overflow-x:hidden}</style></head>
 <body>
 <main class="page">
   <p class="asset-id">B1-I1 · Inline explainer · preview in article context</p>
@@ -199,7 +199,18 @@ if('IntersectionObserver' in window)new IntersectionObserver(function(es){if(!es
 document.addEventListener('visibilitychange',function(){if(document.hidden&&playing){playing=false;clearTimeout(timer);render()}});
 var q=new URLSearchParams(location.search);if(q.has('step')){step=+q.get('step');started=true}
 render();
+
+var autoWanted=!matchMedia('(prefers-reduced-motion: reduce)').matches,autoVisible=false,autoStarted=false;
+schedule=function(){clearTimeout(timer);if(!playing||!autoWanted||!autoVisible||document.hidden)return;timer=setTimeout(function(){step=step>=3?0:step+1;render();schedule()},step>=3?2200:HOLD[step])};
+function autoSync(){clearTimeout(timer);playing=autoWanted&&autoVisible&&!document.hidden;if(playing&&!autoStarted){autoStarted=true;started=true;step=0}render();schedule()}
+bp.addEventListener('click',function(){autoWanted=!playing},true);
+bp.addEventListener('click',function(){if(autoWanted)autoStarted=true;autoSync()});
+[bv,bn].forEach(function(button){button.addEventListener('click',function(){autoWanted=false},true)});
+new IntersectionObserver(function(entries){autoVisible=entries[0].isIntersecting;autoSync()},{threshold:.05}).observe(fig);
+document.addEventListener('visibilitychange',autoSync);
+matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',function(event){autoWanted=!event.matches;if(event.matches){step=3;playing=false}autoSync()});
+
 })();
 </script>
-<script>function reportSize(){parent.postMessage({type:'embed-figure-size',id:"B1-I1",height:document.documentElement.scrollHeight},'*')}new ResizeObserver(reportSize).observe(document.body);document.fonts.ready.then(reportSize);window.addEventListener('load',reportSize);</script></body>
+<script>function reportSize(){parent.postMessage({type:'embed-figure-size',id:"B1-I1",height:Math.ceil(document.body.getBoundingClientRect().height)},'*')}new ResizeObserver(reportSize).observe(document.body);document.fonts.ready.then(reportSize);window.addEventListener('load',reportSize);</script></body>
 </html>

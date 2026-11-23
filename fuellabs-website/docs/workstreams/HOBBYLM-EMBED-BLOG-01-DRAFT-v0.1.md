@@ -2,9 +2,9 @@
 
 A text embedding model built on Fuel Labs' sparse architecture.
 
-HobbyLM-Embed achieved 62.33 on MTEB(eng, v2), submitted to the official leaderboard. We trained it from scratch for text search and similarity and are releasing it as `hobbylm-embed-140m` under Apache-2.0.
+HobbyLM-Embed achieved **62.33 Mean (Task)** / **57.62 Mean (TaskType)** on MTEB(eng, v2), all **41 tasks** (`mteb 2.27.18`). The results are submitted to the official MTEB leaderboard. We trained it from scratch for text search and similarity and are releasing it as `hobbylm-embed-140m` under Apache-2.0.
 
-The model has 140M total, 36M active per token (8 of 32 experts), and produces 512-dimensional embeddings. The evaluation covered all 41 tasks using `mteb 2.26.31`, fp32 and a maximum input length of 512 tokens. The model supports inputs up to 1,024 tokens.
+The model has **140M total parameters**, with **36M active per token** (excluding embeddings; **8 of 32 experts**), and produces **512-dimensional embeddings**. The evaluation covered all **41 tasks** using `mteb 2.27.18`, fp32 and a maximum input length of 512 tokens. The model supports inputs up to **1,024 tokens**.
 
 Sparse routing limits expert computation per token. The active count excludes the shared embedding table; running cost also depends on the shared computation, implementation and hardware.
 
@@ -62,17 +62,17 @@ Pretraining used masked-token prediction. The model learned to recover hidden te
 
 The objective matches the attention pattern: some text is hidden, and the visible context supplies evidence for reconstructing it. Once we use the encoder for embeddings, the application needs its representations rather than predictions over the tokenizer's vocabulary.
 
-The sparse feed-forward blocks use a router to select experts for each token. The model's reported size is 140M total, 36M active per token (8 of 32 experts). Our active count excludes the shared embedding table. We explain that convention and the routing mechanism in the companion article, "Why we chose MoE for embeddings."
+The sparse feed-forward blocks use a router to select experts for each token. The model has **140M total parameters**, with **36M active per token** (excluding embeddings; **8 of 32 experts**). We explain that convention and the routing mechanism in the companion article, [Why we chose MoE for embeddings](/research/why-moe-for-embeddings).
 
 ## How a passage becomes a vector
 
-The GPT-2 tokenizer converts text into token IDs, which the shared embedding table maps to input representations. Attention and feed-forward computation build contextual hidden states across the passage. Mean pooling and normalization then produce a 512-dimensional text embedding.
+The GPT-2 tokenizer converts text into token IDs, which the shared embedding table maps to input representations. Attention and feed-forward computation build contextual hidden states across the passage. Mean pooling and normalization then produce a **512-dimensional text embedding**.
 
 The input table supplies token representations at the entrance to the encoder. A search index stores the final whole-text vectors produced after contextual processing and pooling.
 
 The point-field illustration shows those whole-text representations in a conceptual view. Positions and the returned passage are illustrative. Actual retrieval compares the full embeddings; apparent distances in the picture do not establish rankings.
 
-Output dimensionality stays fixed for supported input lengths. A longer passage still receives a 512-dimensional vector, so the representation must compress more text into the same space. Test whether it preserves the information needed for the application's queries and passage boundaries.
+Output dimensionality stays fixed for supported input lengths. A longer passage still receives a **512-dimensional vector**, so the representation must compress more text into the same space. Test whether it preserves the information needed for the application's queries and passage boundaries.
 
 <!-- Inline explainer B1-I3: Text to token IDs, input embeddings, contextual states, mean pooling, normalization and a 512-dimensional output. Shallow-isometric motion with a complete static poster. -->
 
@@ -136,7 +136,7 @@ The final release result below covers the complete benchmark under the stated se
 
 ## Evaluation
 
-The result covers all 41 tasks. The headline is Mean (Task), which averages individual task scores. Mean (TaskType), shown second in the table, gives each category equal weight.
+The result covers all **41 tasks**. The headline is Mean (Task), which averages individual task scores. Mean (TaskType), shown second in the table, gives each category equal weight.
 
 | Measure | Score |
 |---|---:|
@@ -154,9 +154,11 @@ The categories test different behaviours. Classification evaluates information a
 
 Each category uses its respective task metrics. The scores describe the evaluation profile; the numerical distance between two categories does not measure how much better the model is at one kind of work. For a retrieval application, inspect retrieval behaviour directly alongside the aggregate.
 
-We ran the evaluation with `mteb 2.26.31` in fp32, with a maximum input length of 512 tokens. The supported maximum input length is 1,024 tokens, but that longer setting was not used for this result. Applications using longer passages should evaluate their own chunking and retrieval settings.
+We ran the evaluation with `mteb 2.27.18` in fp32, with a maximum input length of 512 tokens. The supported maximum input length is **1,024 tokens**, but that longer setting was not used for this result. Applications using longer passages should evaluate their own chunking and retrieval settings.
 
-The result is submitted to the official leaderboard. Its description will be updated when the submission is merged.
+The MTEB entry reports **36% zero-shot** coverage. The aggregate score is therefore not an entirely zero-shot result. The training-task list is public in the [merged MTEB model entry](https://github.com/embeddings-benchmark/mteb/pull/5967).
+
+The results are [submitted to the official MTEB leaderboard](https://github.com/embeddings-benchmark/results/pull/858). The model entry is merged; leaderboard publication is pending the results submission being merged.
 
 <!-- Figure 4 / B1-F4: Approved evaluation profile. The table is its accessible text equivalent, not a second visual asset. -->
 
@@ -164,7 +166,7 @@ The result is submitted to the official leaderboard. Its description will be upd
 
 The release is named `hobbylm-embed-140m`. The model destination is [Hugging Face](https://huggingface.co/harims95/hobbylm-embed-140m), and the implementation destination is [GitHub](https://github.com/fuellabs-ai/hobbylm-embed-140m). The release licence is Apache-2.0.
 
-HobbyLM-Embed is intended for English text. Its output has 512 dimensions, and its supported input limit is 1,024 GPT-2 tokens. Token counts are measured after tokenization; a character or word limit is not interchangeable with the token limit.
+HobbyLM-Embed is intended for English text. Its output has **512 dimensions**, and its supported input limit is **1,024 GPT-2 tokens**. Token counts are measured after tokenization; a character or word limit is not interchangeable with the token limit.
 
 Passage boundaries affect what the encoder has to preserve. A passage should contain enough context to answer the queries it is intended to serve. Combining unrelated sections makes the representation responsible for several different subjects, while an isolated fragment can omit information needed to understand it. Chunking should be evaluated as part of the retrieval system.
 
@@ -177,13 +179,13 @@ The benchmark gives a common evaluation setting. Application evaluation supplies
 ### Limitations
 
 - The supported language is English; multilingual performance is not established here.
-- The published score used maximum length 512, while the model supports up to 1,024 tokens. The score does not establish retrieval quality at the longer limit.
+- The published score used maximum length 512, while the model supports up to **1,024 tokens**. The score does not establish retrieval quality at the longer limit.
 - Inputs use the GPT-2 tokenizer. Check passage lengths in tokens when setting chunk boundaries.
 - Retrieval requires the `query:` and `passage:` prefixes. Keep their use consistent across indexing and queries.
 
 We are publishing the model and its approved implementation. Training data sources, mixtures and detailed preparation procedures remain internal, along with training hyperparameters and proprietary optimization work.
 
-We thank Jarvis Labs for providing compute for this work.
+We thank [Jarvis Labs](https://jarvislabs.ai) for providing compute for this work.
 
 ## Team and citation
 

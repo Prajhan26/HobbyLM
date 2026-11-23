@@ -1,0 +1,78 @@
+@font-face { font-family: 'Embed Geist'; src: url('/fonts/geist/geist-latin.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Embed Geist Mono'; src: url('/fonts/geist/geist-mono-latin.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; }
+
+/* Measurements from Mixedbread's Wholembed v3 article, including its 90% desktop scale. */
+:global(body):has(.study) {
+  --color-paper: #fff;
+  --color-surface: #f5f5f5;
+  --color-ink: #0a0a0a;
+  --color-muted: #737373;
+  --color-line: #e5e5e5;
+  --font-editorial: 'Embed Geist', Arial, sans-serif;
+  --font-article-body: 'Embed Geist', Arial, sans-serif;
+  --font-mono: 'Embed Geist Mono', monospace;
+  background: #fff;
+}
+:global(html):has(.study) { background: #fff; }
+:global(body):has(.study) > header { border-bottom: 0; }
+:global(body):has(.study) > header > div { width: min(calc(100% - 48px), 972px); min-height: 56.6px; }
+:global(body):has(.study) > header nav a { font-size: 12.6px; }
+:global(body):has(.study) > header a[aria-label] { min-height: 0; }
+
+.study {
+  --unit: .9;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 691.2px) minmax(0, 1fr);
+  width: calc(100% - 83.2px);
+  margin: 0 auto;
+  padding: 56px 0 86.4px;
+  font-family: 'Embed Geist', Arial, sans-serif;
+  font-size: 14.4px;
+  line-height: 25.2px;
+}
+.header { grid-column: 2; grid-row: 1; min-width: 0; }
+.back { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 32.4px; font-size: 12.6px; line-height: 18px; text-decoration: none; }
+.back:hover { text-decoration: underline; text-underline-offset: 4px; }
+.study .header h1 { max-width: none; margin: 0 0 18px; font-size: 32.4px; font-weight: 400; letter-spacing: -.81px; line-height: 36px; text-wrap: initial; }
+.deck { margin: 0 0 21.6px; color: var(--color-muted); font-size: 14.4px; line-height: 25.2px; }
+.meta { display: flex; gap: 9px; align-items: center; margin-bottom: 28.8px; color: var(--color-muted); font-size: 12.6px; line-height: 21.6px; }
+.meta span:first-child { color: var(--color-ink); font-weight: 500; }
+.study .header figure { margin-top: 0; margin-bottom: 18px; }
+.study .header figure video, .study .header figure picture img { border-radius: 2px; }
+.study .header figure button { width: 32px; height: 32px; border-radius: 4px; }
+.body { grid-column: 2; grid-row: 3; min-width: 0; max-width: none; font-size: 16px; line-height: 25.2px; }
+.study .body p { margin: 0 0 18px; }
+.study .body h2 { margin: 43.2px 0 21.6px; font-family: inherit; font-size: 21.6px; font-weight: 600; line-height: 28.8px; letter-spacing: normal; }
+.study .body h3 { margin: 28.8px 0 14.4px; font-family: inherit; font-size: 18px; font-weight: 600; line-height: 25.2px; letter-spacing: normal; }
+.study .body strong { font-weight: 600; }
+.study .body ul { margin: 18px 0; padding-left: 23.4px; }
+.study .body li { padding-left: 5.4px; margin-bottom: 7.2px; }
+.study .body a { text-decoration-color: #a3a3a3; }
+.study .body pre { padding: 14.4px; border-radius: 5.4px; margin: 21.6px 0; }
+.study .body > div:has(> iframe) { margin: 28.8px 0; }
+.study .body > div:has(> table) { width: 100%; margin: 28.8px 0; }
+.study nav[aria-label='Article contents'] { display: block; grid-column: 3; grid-row: 1 / 4; margin: 54px 0 0 min(9.1vw, 131.2px); width: 201.6px; top: 100px; font-size: 12.6px; }
+.study nav[aria-label='Article contents'] p { color: var(--color-muted); font-size: 12.6px; font-weight: 400; }
+.study nav[aria-label='Article contents'] ol { gap: 0; border-left: 1px solid var(--color-line); }
+.study nav[aria-label='Article contents'] a { padding: 5.4px 10.8px; font-size: 12.6px; line-height: 18px; }
+.study nav[aria-label='Article contents'] a[aria-current='location'] { border-left: 1px solid var(--color-lime); margin-left: -1px; }
+.study nav[aria-label='Article contents'] a::before { display: none; }
+.study > details { display: none; grid-column: 2; grid-row: 2; }
+@media (max-width: 1199px) {
+  .study { --unit: 1; width: min(calc(100% - 48px), 768px); grid-template-columns: minmax(0, 1fr); padding-top: 64px; font-size: 16px; line-height: 28px; }
+  .header, .body, .study > details { grid-column: 1; }
+  .study .header h1 { font-size: 36px; line-height: 40px; letter-spacing: -.9px; margin-bottom: 20px; }
+  .deck, .body { font-size: 16px; line-height: 28px; }
+  .back { font-size: 14px; line-height: 20px; margin-bottom: 36px; }
+  .meta { font-size: 14px; line-height: 24px; margin-bottom: 32px; }
+  .study .body p { margin-bottom: 20px; }
+  .study .body h2 { font-size: 24px; line-height: 32px; margin: 48px 0 24px; }
+  .study .body h3 { font-size: 20px; line-height: 28px; margin: 32px 0 16px; }
+  .study nav[aria-label='Article contents'] { display: none; }
+  .study > details { display: block; margin: 0 0 24px; padding: 12px 0; font-size: 14px; }
+}
+@media (max-width: 640px) {
+  .study { width: calc(100% - 32px); padding-top: 40px; padding-bottom: 64px; }
+  .study .header h1 { font-size: 24px; line-height: 32px; letter-spacing: -.6px; }
+  :global(body):has(.study) > header > div { width: calc(100% - 32px); min-height: 64px; padding-block: 10px; }
+}

@@ -59,7 +59,7 @@ figcaption{max-width:540px;margin:14px auto 0;text-align:center;font:400 13px/1.
 .fig[data-step="0"] .ob,.fig[data-step="1"] .ob,.fig[data-step="2"] .ob,.fig[data-step="3"] .ob{opacity:.15}
 .fig[data-step="0"] .call{opacity:0}
 </style>
-<style>.asset-id,.prose{display:none!important}.page{padding:16px 0!important;margin:0 auto!important;max-width:100%!important}html,body{overflow-x:hidden}</style></head>
+<style>.asset-id,.prose{display:none!important}.page{padding:16px 12px!important;box-sizing:border-box;margin:0 auto!important;max-width:100%!important}html,body{overflow-x:hidden}</style></head>
 <body>
 <main class="page">
   <p class="asset-id">B2-F2 · Blog 2 Figure 2 · preview in article context</p>
@@ -104,10 +104,20 @@ function move(n){playing=false;clearTimeout(timer);started=true;step=Math.max(0,
 bv.addEventListener('click',function(){move(step-1)});bn.addEventListener('click',function(){move(step+1)});
 if('IntersectionObserver' in window)new IntersectionObserver(function(es){if(!es[0].isIntersecting&&playing){playing=false;clearTimeout(timer);render()}}).observe(fig);
 document.addEventListener('visibilitychange',function(){if(document.hidden&&playing){playing=false;clearTimeout(timer);render()}});
-var auto=false;if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){var io2=new IntersectionObserver(function(es){if(es[0].isIntersecting&&!auto){auto=true;io2.disconnect();bp.click()}},{threshold:.5});io2.observe(fig)}
 var q=new URLSearchParams(location.search);if(q.has('step')){step=+q.get('step');started=true}
 render();
+
+var autoWanted=!matchMedia('(prefers-reduced-motion: reduce)').matches,autoVisible=false,autoStarted=false;
+schedule=function(){clearTimeout(timer);if(!playing||!autoWanted||!autoVisible||document.hidden)return;timer=setTimeout(function(){step=step>=LAST?0:step+1;render();schedule()},step>=LAST?2200:HOLD[step])};
+function autoSync(){clearTimeout(timer);playing=autoWanted&&autoVisible&&!document.hidden;if(playing&&!autoStarted){autoStarted=true;started=true;step=0}render();schedule()}
+bp.addEventListener('click',function(){autoWanted=!playing},true);
+bp.addEventListener('click',function(){if(autoWanted)autoStarted=true;autoSync()});
+[bv,bn].forEach(function(button){button.addEventListener('click',function(){autoWanted=false},true)});
+new IntersectionObserver(function(entries){autoVisible=entries[0].isIntersecting;autoSync()},{threshold:.05}).observe(fig);
+document.addEventListener('visibilitychange',autoSync);
+matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',function(event){autoWanted=!event.matches;if(event.matches){step=LAST;playing=false}autoSync()});
+
 })();
 </script>
-<script>function reportSize(){parent.postMessage({type:'embed-figure-size',id:"B2-F2",height:document.documentElement.scrollHeight},'*')}new ResizeObserver(reportSize).observe(document.body);document.fonts.ready.then(reportSize);window.addEventListener('load',reportSize);</script></body>
+<script>function reportSize(){parent.postMessage({type:'embed-figure-size',id:"B2-F2",height:Math.ceil(document.body.getBoundingClientRect().height)},'*')}new ResizeObserver(reportSize).observe(document.body);document.fonts.ready.then(reportSize);window.addEventListener('load',reportSize);</script></body>
 </html>

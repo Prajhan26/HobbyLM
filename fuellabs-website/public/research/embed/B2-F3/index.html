@@ -66,7 +66,7 @@ figcaption{max-width:540px;margin:14px auto 0;text-align:center;font:400 13px/1.
 .views .play{display:grid;place-items:center;width:44px;padding:0}
 @media (prefers-reduced-motion:reduce){.fig *{transition:none!important}}
 </style>
-<style>.asset-id,.prose{display:none!important}.page{padding:16px 0!important;margin:0 auto!important;max-width:100%!important}html,body{overflow-x:hidden}</style></head>
+<style>.asset-id,.prose{display:none!important}.page{padding:16px 12px!important;box-sizing:border-box;margin:0 auto!important;max-width:100%!important}html,body{overflow-x:hidden}</style></head>
 <body>
 <main class="page">
   <p class="asset-id">B2-F3 · Blog 2 Figure 3 · preview in article context</p>
@@ -99,10 +99,24 @@ function play(){clearTimeout(timer);show('a');timer=setTimeout(function(){show('
 vb.forEach(function(b){b.addEventListener('click',function(){clearTimeout(timer);show(b.dataset.v)})});
 bp.addEventListener('click',play);
 var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
-if(!rm&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){io.disconnect();play()}},{threshold:.5});io.observe(fig)}
 document.addEventListener('visibilitychange',function(){if(document.hidden)clearTimeout(timer)});
 var q=new URLSearchParams(location.search);show(q.get('view')||'both');
+
+var autoWanted=!matchMedia('(prefers-reduced-motion: reduce)').matches,autoVisible=false,autoView='both';
+var originalPlayIcon=bp.innerHTML;
+var pauseIcon='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 3.25v9.5M11.5 3.25v9.5" stroke="currentColor" stroke-width="1.5"/></svg>';
+var autoButton=bp.cloneNode(true);bp.replaceWith(autoButton);bp=autoButton;
+function autoRender(){var on=autoWanted&&autoVisible&&!document.hidden;bp.innerHTML=on?pauseIcon:originalPlayIcon;bp.setAttribute('aria-label',on?'Pause explanation':'Play explanation');bp.setAttribute('aria-pressed',String(on))}
+function autoTick(){clearTimeout(timer);if(!autoWanted||!autoVisible||document.hidden)return;timer=setTimeout(function(){autoView=autoView==='a'?'b':autoView==='b'?'both':'a';show(autoView);autoTick()},autoView==='both'?2200:1700)}
+function autoSync(){clearTimeout(timer);autoRender();autoTick()}
+bp.addEventListener('click',function(){autoWanted=!autoWanted;if(autoWanted&&autoView==='both'){autoView='a';show(autoView)}autoSync()});
+vb.forEach(function(button){button.addEventListener('click',function(){autoWanted=false;autoView=button.dataset.v;autoSync()})});
+new IntersectionObserver(function(entries){var was=autoVisible;autoVisible=entries[0].isIntersecting;if(autoVisible&&!was&&autoWanted&&autoView==='both'){autoView='a';show(autoView)}autoSync()},{threshold:.05}).observe(fig);
+document.addEventListener('visibilitychange',autoSync);
+matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',function(event){autoWanted=!event.matches;if(event.matches){autoView='both';show(autoView)}autoSync()});
+autoRender();
+
 })();
 </script>
-<script>function reportSize(){parent.postMessage({type:'embed-figure-size',id:"B2-F3",height:document.documentElement.scrollHeight},'*')}new ResizeObserver(reportSize).observe(document.body);document.fonts.ready.then(reportSize);window.addEventListener('load',reportSize);</script></body>
+<script>function reportSize(){parent.postMessage({type:'embed-figure-size',id:"B2-F3",height:Math.ceil(document.body.getBoundingClientRect().height)},'*')}new ResizeObserver(reportSize).observe(document.body);document.fonts.ready.then(reportSize);window.addEventListener('load',reportSize);</script></body>
 </html>

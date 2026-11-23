@@ -2,9 +2,9 @@
 
 The routing mechanism behind HobbyLM-Embed, and how to read its parameter counts.
 
-HobbyLM-Embed uses a sparse mixture-of-experts architecture: 140M total, 36M active per token (8 of 32 experts). The router selects part of the expert pool for each token, allowing different tokens to take different paths through the feed-forward computation.
+HobbyLM-Embed uses a sparse mixture-of-experts architecture: **140M total parameters**, with **36M active per token** (excluding embeddings; **8 of 32 experts**). The router selects part of the expert pool for each token, allowing different tokens to take different paths through the feed-forward computation.
 
-That choice carried familiar engineering from our language-model work into an encoder. We could build on an existing sparse architecture while training fresh weights for text embeddings. The encoder reads its input with bidirectional attention and produces a 512-dimensional representation.
+That choice carried familiar engineering from our language-model work into an encoder. We could build on an existing sparse architecture while training fresh weights for text embeddings. The encoder reads its input with bidirectional attention and produces a **512-dimensional representation**.
 
 MoE gives us a way to vary which parameters participate in a token's computation. Understanding that mechanism also means being precise about what the active count includes, how tokens are routed, and what parameter counts can tell a reader about deployment.
 
@@ -18,7 +18,7 @@ The expert pool supplies several possible transformations at that point in the e
 
 In HobbyLM-Embed, the router selects eight of 32 experts per token. Different tokens can receive different selections. The routing decision belongs to a token at a particular layer; it is not a decision to assign an entire document to a single expert.
 
-The model's stated size is 140M total, 36M active per token (8 of 32 experts). That active count uses our convention of excluding the shared embedding table, which contains about 26M parameters. The table remains part of the model and is used to look up input-token representations.
+The model has **140M total parameters**, with **36M active per token** (excluding embeddings; **8 of 32 experts**). This follows the MTEB counting convention we use. The excluded shared embedding table contains about **26M parameters**. The table remains part of the model and is used to look up input-token representations.
 
 The total and active figures therefore answer different questions. The total describes the parameter inventory. The active figure describes participation under the stated counting convention. Shared attention and the input lookup still contribute work, and a deployment has to account for the weights it keeps available, including experts that a particular token does not select.
 
@@ -42,7 +42,7 @@ This distinction matters for the final embedding. The model builds token represe
 
 Across a batch, different tokens can collectively use more of the expert pool than any individual token selects. A per-token count consequently does not specify the number of distinct experts used by a passage or batch. It also does not imply that unselected expert weights have been removed from the deployment.
 
-HobbyLM-Embed produces a 512-dimensional vector through its pooling and normalization path. The `query:` and `passage:` prefixes indicate the retrieval role of an input. Both inputs pass through the encoder, and the application compares the resulting representations to retrieve passages.
+HobbyLM-Embed produces a **512-dimensional vector** through its pooling and normalization path. The `query:` and `passage:` prefixes indicate the retrieval role of an input. Both inputs pass through the encoder, and the application compares the resulting representations to retrieve passages.
 
 In a point-field visualization, each document point represents that completed text embedding. The points are separate from the expert grid: the grid describes computation inside a block, while the field depicts a collection of encoder outputs. Our field is conceptual, with illustrative positions rather than a measured projection.
 
@@ -64,8 +64,8 @@ A count of active parameters cannot establish query latency, throughput or memor
 
 Index construction and query serving also place different demands on the encoder. Index construction can process a collection in batches. A search request needs a query embedding before retrieval can begin. A deployment evaluation should measure both paths in the settings the application will use.
 
-We evaluated the released model in fp32, with a maximum evaluation length of 512 tokens. That is the precision and length associated with the approved benchmark result in the companion article. The model supports inputs up to 1,024 tokens; that input limit is separate from the benchmark setting.
+We evaluated the released model in fp32, with a maximum evaluation length of 512 tokens. That is the precision and length associated with the approved benchmark result in the companion article. The model supports inputs up to **1,024 tokens**; that input limit is separate from the benchmark setting.
 
 Our reason for choosing MoE was to develop an embedding encoder with conditional expert computation on an architecture we already understood. The release makes that design available for inspection and use. The detailed data and optimization recipe remains internal.
 
-The release destinations are [Hugging Face](https://huggingface.co/harims95/hobbylm-embed-140m) and [GitHub](https://github.com/fuellabs-ai/hobbylm-embed-140m), under Apache-2.0. We thank Jarvis Labs for providing compute for this work.
+The release destinations are [Hugging Face](https://huggingface.co/harims95/hobbylm-embed-140m) and [GitHub](https://github.com/fuellabs-ai/hobbylm-embed-140m), under Apache-2.0. We thank [Jarvis Labs](https://jarvislabs.ai) for providing compute for this work.
